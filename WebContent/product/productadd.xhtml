@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/common/template.xhtml">
+
+	<ui:define name="content">
+	
+		<h:form id="productaddFrm">
+	
+			<table>
+				<tr>
+					<td class="labelRight">
+						<h:outputText value="รหัสสินค้า" />
+					</td>
+					<td class="contentForm">
+						<h:inputText style="width:200px;"/>
+						<rich:spacer width="5"/>
+						<a4j:commandButton value="ค้นหา"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelRight">
+						<h:outputText value="รายละเอียด" />
+					</td>
+					<td class="contentForm">
+						<h:inputTextarea value="" cols="22"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelRight">
+						<h:outputText value="ขนาด" />
+					</td>
+					<td class="contentForm">
+						<h:inputTextarea value="" cols="22"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelRight">
+						<h:outputText value="สี" />
+					</td>
+					<td class="contentForm">
+						<h:inputText style="width:200px;"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelRight">
+						<h:outputText value="ราคาทุน / ชิ้น" />
+					</td>
+					<td class="contentForm">
+						<h:inputText style="width:200px;"/><h:outputText value=" บาท" />
+					</td>
+				</tr>
+				<tr>
+					<td class="labelRight">
+						<h:outputText value="ราคาขาย / ชิ้น" />
+					</td>
+					<td class="contentForm">
+						<h:inputText style="width:200px;"/><h:outputText value=" บาท" />
+					</td>
+				</tr>
+				<tr>
+					<td class="labelRight">
+						<h:outputText value="จำนวนคงเหลือ" />
+					</td>
+					<td class="contentForm">
+						<h:inputText style="width:200px;"/><h:outputText value=" ชิ้น" />
+					</td>
+				</tr>
+				<tr>
+					<td class="labelRight">
+						<h:outputText value="รูปภาพ" />
+					</td>
+					<td class="contentForm">
+						
+					</td>
+				</tr>
+				<tr>
+					<td><rich:spacer/></td>
+					<td>
+						<div style="text-align:center;padding-top:20px;">
+							<a4j:commandButton value="บันทึก"/>
+							<rich:spacer width="30"/>
+							<h:commandButton value="ยกเลิก" action="#{productAddManage.directToProductList()}"/>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>

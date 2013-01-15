@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/common/template.xhtml">
+
+	<ui:define name="content">
+	
+		<h:form id="loginFrm">
+	
+			<div style="width:100%;text-align:center;padding-top:50px;">
+				<center>
+				<h:panelGrid columns="1" width="350" style="text-align:left;" cellpadding="0" cellspacing="0" border="0">
+					<h:messages styleClass="msg_fail"/>
+				</h:panelGrid>
+				
+				<table width="300px" cellspacing="1px" style="border:1px solid #aaaaaa;color:white;font-size:13px;font-weight:bold;">
+					<tr class="header-login">
+						<td align="left">
+							<h:outputText value="LoginForm" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<table cellpadding="1" cellspacing="1" border="0" width="100%" 
+								style="font-weight:bold;margin-top:30px;margin-bottom:30px;">
+								<tr>
+									<td class="body-login">
+										<center>
+										<h:panelGrid columns="1" cellpadding="1" cellspacing="1">
+											<h:panelGrid columns="1" width="100%" style="text-align:left;" cellpadding="1" cellspacing="1">
+												<h:outputLabel for="name" value="Username"/>
+											</h:panelGrid>
+											<h:inputText id="name" value="#{credentials.username}"/>
+										</h:panelGrid>
+										</center>
+									</td>
+								</tr>
+								<tr>
+									<td class="body-login">
+										<center>
+										<h:panelGrid columns="1" cellpadding="1" cellspacing="1">
+											<h:panelGrid columns="1" width="100%" style="text-align:left;" cellpadding="1" cellspacing="1">
+												<h:outputLabel for="password" value="Password"/>
+											</h:panelGrid>
+											<h:inputSecret id="password" value="#{credentials.password}"/>
+										</h:panelGrid>
+										</center>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr class="footer-login">
+						<td align="center">
+							<h:commandButton image="/imgs/login_btn.png" styleClass="login-btn" action="#{identity.login}"
+								onmouseover="this.src='#{webUtils.getContextApp()}/imgs/login_over_btn.png'"
+								onmouseout="this.src='#{webUtils.getContextApp()}/imgs/login_btn.png'"/>
+						</td>
+					</tr>
+				</table>
+				</center>
+			</div>
+		
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,76 @@
+<rich:page xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:a4j="http://richfaces.org/a4j" markupType="xhtml"
+	contentType="text/html">
+
+	<title>Inventory</title>
+
+	<a4j:loadScript src="resource://jquery.js"/>
+	<a4j:loadScript src="/js/jquery-ui/jquery.ui.core.js"/>
+	<a4j:loadScript src="/js/jquery-ui/jquery.ui.datepicker.th.custom.js"/>
+	<a4j:loadScript src="/js/jquery-ui/ui.datepicker-th.js"/>
+	<a4j:loadScript src="/js/validate_data.js"/>
+	<a4j:loadScript src="/js/utils.js" />
+	<a4j:loadScript src="/js/NumberFormat.js" />
+
+	<a4j:loadStyle src="/css/default.css" />
+	<a4j:loadStyle src="/css/cupertino/jquery-ui-1.8.2.custom.css" />
+	
+	<f:facet name="header">
+		<h:panelGroup>
+			<table width="100%" cellpadding="0" cellspacing="1">
+				<tbody>
+					<tr bgcolor="#141e70" class="banner_bg">
+						<td>
+							<div class="banner">
+								<div class="comp_tag">
+									<h:graphicImage value="/imgs/comp_tag.png" />
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</h:panelGroup>
+	</f:facet>
+
+	<h:form id="tool_bar_frm">
+		
+		<rich:toolBar height="30" styleClass="top_menu_bar">
+			<rich:dropDownMenu showDelay="9999">
+                <f:facet name="label"> 
+                    <h:panelGroup>
+                    	<h:commandLink value="รายการสินค้า" action="#{menuPageManage.directToProductList()}"/>
+                    </h:panelGroup>
+                </f:facet>
+ 			</rich:dropDownMenu>
+ 			<rich:dropDownMenu showDelay="9999">
+                <f:facet name="label"> 
+                    <h:panelGroup>
+                        <h:commandLink value="รายการสั่งซื้อ" action="#{menuPageManage.directToOrderList()}"/>
+                    </h:panelGroup>
+                </f:facet>
+ 			</rich:dropDownMenu>
+		</rich:toolBar>
+	</h:form>
+	
+	<rich:panel styleClass="content_container">
+		<ui:insert name="content"></ui:insert>
+	</rich:panel>
+
+	<rich:modalPanel id="modal_loader" width="250" height="35">
+		<h:graphicImage value="/imgs/loader.gif" />
+	</rich:modalPanel>
+
+	<f:facet name="footer">
+		<h:panelGrid columns="1" styleClass="footer">
+	        <h:outputText value="Developed by PTE Engineering Consultants Co.,Ltd"/>
+	     </h:panelGrid>
+    </f:facet>
+	
+</rich:page>

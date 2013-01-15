@@ -1,0 +1,225 @@
+body {
+	background-color:#efefef;
+	/*background-color:#000000;*/
+	margin:0;
+	font-family:Dillenia,Verdana,sans-serif;
+}
+a{
+	text-decoration:none;
+	color:black;	
+}
+form{
+	margin:0px;
+}
+a:hover{
+	color:#ff3300;	
+}
+.content_container{
+	min-height:450px;
+}
+.banner{
+	position:relative;
+	background: url(/floodmap/imgs/PTE_BANNER.png) no-repeat;
+	height:99px;
+}
+.comp_tag{
+	position:absolute;
+	width:440px;
+	bottom:0;
+	right:0;
+}
+.banner_bg{
+	background: url(/floodmap/imgs/banner_bg.png) repeat-x;
+}
+.top_menu_bar{
+	/*background: url(/floodmap/imgs/topmenu_bg.jpg) repeat-x;*/
+	height:35px;
+}
+.drop_down_menu{
+	font-size:12px;
+}
+.ddm_detail{
+	font-size:11px;
+	font-weight:bold;
+	text-align:left;
+}
+.footer{
+	font-size:10px;
+	color:#777777;
+}
+.nav_bar{
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	color:#3355BB;
+}
+.labelRight{
+	text-align:right;
+	vertical-align:top;
+	background-color:#dceafc;
+	padding:7px 5px 7px 5px;
+	width:155px;
+	font-weight:bold;
+	color:#444444;
+	font-size:12px;
+}
+.labelRightDamageDetail{
+	text-align:right;
+	vertical-align:top;
+	background-color:#dceafc;
+	padding:7px 5px 7px 5px;
+	font-weight:bold;
+	color:#444444;
+	font-size:12px;
+}
+.contentForm{
+	background-color:#efefef;
+	padding:7px 5px 7px 5px;
+	text-align:left;
+	font-size:12px;
+}
+.label_add_frm{
+	font-weight:bold;
+	color:#000099;	
+}
+.intxt_wrap{
+	width:40px;
+	border-width:0px;
+	font-weight:bold;
+	background-color:#eeeeee;
+	font-family:Arial,Verdana,sans-serif;	
+}
+.msg_success{
+	font-weight:bold;
+	color:green;	
+}
+.msg_fail{
+	font-weight:bold;
+	color:red;
+}
+.msg_normal{
+	font-weight:bold;
+	color:blue;
+}
+
+.fieldset_layout{
+	border-color:#0000aa;
+	border-style:solid;
+	border-width:1px;
+}
+
+.fieldset_content_layout{
+	padding-top:5px; 
+	padding-bottom:10px;
+	padding-right:10px;
+	padding-left:10px;	
+}
+
+.fieldset_label{
+	font-weight:bold;
+	color:#0000aa;
+	font-size:12px;
+}
+.km-select{
+	background-color:#0022ff;
+	border-bottom:0px;
+	border-left:1px;
+	border-right:1px;
+	border-top:1px;
+	border-style:solid;
+	border-color:#0022ff;
+}
+.km-select-txt{
+	padding-left:10px;
+	padding-right:10px;
+	color:  white;
+	font-size:13px;
+	font-weight:bold;
+}
+.km-unselect{
+	background-color:transparent;
+	border-bottom:0px;
+	border-left:1px;
+	border-right:1px;
+	border-top:1px;
+	border-style:solid;
+	border-color:#0022ff;
+}
+.km-unselect-txt{
+	padding-left:10px;
+	padding-right:10px;
+	color:#777777;
+	font-size:13px;
+	font-weight:bold;
+	text-decoration:underline;
+}
+.header-login{
+	height:30px;
+	background:url(../imgs/login_frm_bg3.png) repeat-x;
+}
+.body-login{
+	font-weight:bold;
+	color:#444444;
+	font-size:12px;	
+}
+.body-login input{
+	border:1px solid #444444;
+}
+.footer-login{
+	height:30px;
+	background:url(../imgs/login_frm_bg3.png) repeat-x;
+}
+.login-btn{
+	margin-top:3px;
+}
+.select-chart-active{
+	font-size:13px;
+	font-weight:bold;	
+	color:green;
+}
+.select-chart-inactive{
+	font-size:13px;
+	font-weight:bold;	
+	color:gray;
+}
+
+/*####### custom richface style #######*/
+
+.rich-ddmenu-label-select{
+	background-color:transparent;
+	border-color:transparent;
+}
+
+.rich-menu-list-border{
+	filter: Alpha(Opacity=100); 
+	opacity:1;
+	opacity:100;
+}
+.button[type="button"], button[type="reset"], button[type="submit"], input[type="reset"], input[type="submit"], input[type="button"]{
+	color:#cc2200;
+	cursor:pointer;
+	font-size:13px;
+}
+
+.label_head{
+	font-weight:bold;
+	text-decoration:none;
+	font-size:13px;
+}
+
+.chk_guarantee{
+	cursor:pointer;font-weight:bold;
+}
+
+.tree_menu{
+   	color:#000000;
+}
+
+.selectedMenu{
+    background-color:#d4eaff;
+    color:#e79a00;	
+}
+
+.rich-label-text-decor{
+	font-size: 13px;
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram model-entity="SeamPagesDiagram">
+ <item ID="#*" NAME="#x*" PATH="/*" SHAPE="24,17,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/login.xhtml" NAME="output" PATH="/login.xhtml"
+   TARGET="#xlogin.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="#{pageHierarchyManage.pageFileName}" NAME="output1"
+   PATH="#{pageHierarchyManage.pageFileName}"
+   TARGET="##{pageHierarchyManage.pageFileName}" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
+ <item ID="#login.xhtml" NAME="#xlogin.xhtml" PATH="/login.xhtml"
+  SHAPE="440,17,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/summary/viewmap.xhtml" NAME="output"
+   PATH="/summary/viewmap.xhtml" TARGET="#xsummary#xviewmap.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/summary/viewmap.xhtml" NAME="output1"
+   PATH="/summary/viewmap.xhtml" TARGET="#xsummary#xviewmap.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
+ <item ID="javax.faces.application.ViewExpiredException"
+  NAME="exception:javax.faces.application.ViewExpiredException"
+  PATH="javax.faces.application.ViewExpiredException" SHAPE="56,145,0,0"
+  TYPE="exception" model-entity="SeamPagesDiagramItem">
+  <output ID="/login.xhtml" NAME="output" PATH="/login.xhtml"
+   TARGET="#xlogin.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
+ <item ID="org.jboss.seam.security.NotLoggedInException"
+  NAME="exception:org.jboss.seam.security.NotLoggedInException"
+  PATH="org.jboss.seam.security.NotLoggedInException" SHAPE="56,249,0,0"
+  TYPE="exception" model-entity="SeamPagesDiagramItem">
+  <output ID="/login.xhtml" NAME="output" PATH="/login.xhtml"
+   TARGET="#xlogin.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
+ <item ID="org.jboss.seam.security.AuthorizationException"
+  NAME="exception:org.jboss.seam.security.AuthorizationException"
+  PATH="org.jboss.seam.security.AuthorizationException"
+  SHAPE="440,145,0,0" TYPE="exception" model-entity="SeamPagesDiagramItem">
+  <output ID="/security_error.xhtml" NAME="output"
+   PATH="/security_error.xhtml" TARGET="#xsecurity_error.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
+ <item NAME="##{pageHierarchyManage.pageFileName}"
+  PATH="#{pageHierarchyManage.pageFileName}" SHAPE="1432,17,0,0"
+  TYPE="page" model-entity="SeamPagesDiagramItem"/>
+ <item NAME="#xsummary#xviewmap.xhtml" PATH="/summary/viewmap.xhtml"
+  SHAPE="792,17,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/*" NAME="output" PATH="/*" TARGET="#x*" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
+ <item NAME="#xsecurity_error.xhtml" PATH="/security_error.xhtml"
+  SHAPE="792,145,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/*" NAME="output" PATH="/*" TARGET="#x*" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
+</diagram>
