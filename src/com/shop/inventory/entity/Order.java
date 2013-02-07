@@ -3,18 +3,53 @@ package com.shop.inventory.entity;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+@Entity
+@Table(name="order", schema="public")
 public class Order extends AbstractEntity {
 
+	@Id
+	@Column(name="order_code", unique=true, nullable=false)
 	private Long orderCode;
+	
+	@Column(name="order_date")
 	private Date orderDate;
+	
+	@Column(name="customer_name")
 	private String customerName;
+	
+	@Column(name="ship_name")
 	private String shipName;
+	
+	@Column(name="ship_address")
 	private String shipAddress;
+	
+	@Column(name="sender_name")
 	private String senderName;
+	
+	@Column(name="sender_address")
 	private String senderAddress;
+	
+	@Column(name="tracking_number")
 	private String trackingNumber;
+	
+	@Column(name="ems_price")
 	private Integer includeEMS = 30;
+	
+	@Column(name="status")
 	private String status;
+	
+	@OneToMany(mappedBy="order", targetEntity=OrderDetail.class, cascade={CascadeType.ALL})	
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<OrderDetail> orderDetail;
 
 	public Long getOrderCode() {

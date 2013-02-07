@@ -32,7 +32,7 @@
 				<prop key="hibernate.dialect" >${hibernate.dialect}</prop>
 				<prop key="hibernate.show_sql" >false</prop>
 				<prop key="hibernate.format_sql" >true</prop>
-				<!-- prop key="hibernate.hbm2ddl.auto">update</prop-->
+				<!-- prop key="hibernate.hbm2ddl.auto">update</prop -->
 				<prop key="hibernate.connection.driver_class" >${jdbc.driverClassName}</prop>
 				<prop key="hibernate.connection.url">${jdbc.url}</prop>
 				<prop key="hibernate.connection.username" >${jdbc.username}</prop>
@@ -78,13 +78,6 @@
 		</property>
 	</bean>
 
-	<bean id="configWebservice" class="com.pte.util.PropertyFileConfig">
-		<property name="configPath" value="webServiceMsg.properties" />
-    </bean>
-
-	<bean id="componentWebService" class="com.pte.remote.service.ComponentService"></bean>
-
-	<import resource="classpath:org/codehaus/xfire/spring/xfire.xml"/>
 	<import resource="classpath:applicationBean.xml"/>
 	
 </beans>

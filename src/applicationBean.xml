@@ -10,7 +10,14 @@
 		http://www.springframework.org/schema/aop 
 		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 	 
-	 <bean id="configUpload" class="com.pte.util.PropertyFileConfig">
+   	<bean id="provinceDao" class="com.shop.inventory.dao.ProvinceDao"/>
+	<bean id="amphurDao" class="com.shop.inventory.dao.AmphurDao"/>
+	<bean id="tambonDao" class="com.shop.inventory.dao.TambonDao"/>
+	<bean id="productDao" class="com.shop.inventory.dao.ProductDao"/>
+	 
+	<!-- bean id="stationService" class="com.pte.floodmap.service.StationService" autowire="byName"/ -->
+    
+	<bean id="configUpload" class="com.pte.util.PropertyFileConfig">
 		<property name="configPath" value="upload.properties" />
     </bean>
     
