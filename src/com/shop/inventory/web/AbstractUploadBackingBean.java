@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -23,6 +24,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.shop.inventory.utils.AppUtils;
 import com.shop.inventory.web.utils.WebUtils;
+import com.shop.inventory.wrapper.FileItem;
 
 @MappedSuperclass
 public abstract class AbstractUploadBackingBean<T> extends AbstractBackingBean<T> {
@@ -36,10 +38,10 @@ public abstract class AbstractUploadBackingBean<T> extends AbstractBackingBean<T
 	protected int img_width = 20;
 	protected int img_height =20;
 	protected int uploadsAvailable = 10;
-	protected int fileSizeBytesAllows = 5000000;//5MB Upload Limit
+	protected int fileSizeBytesAllows = 1000000;//5MB Upload Limit
 	protected int imgSizeBytesAllows = 800000;//800KB Upload Limit
 	protected int imgSizeDamageLevelAllows = 50000;//50KB Upload Limit
-	protected final int viewCol = 5;
+	protected final int viewCol = 3;
 	protected boolean autoUpload = false;
 	protected boolean useFlash = false;
 	
@@ -205,6 +207,22 @@ public abstract class AbstractUploadBackingBean<T> extends AbstractBackingBean<T
 		}
 	}
 	
+	public void savefiles(List<FileItem> files)throws Exception{
+		
+		String savePath = rootPath+File.separator+rootAttach;
+		
+		if(files != null && files.size() > 0){
+			for(FileItem fitem : files){
+				String subPath = File.separator+fitem.getProductRefCode();
+				subPath += File.separator+fitem.getAttachType()+File.separator;
+				
+				new File(savePath+subPath).mkdirs();
+			
+				fitem.getFileTmp().renameTo(new File(savePath+subPath+fitem.getName()));
+			}
+		}
+	}
+	
 	public String getGenerateFileName(String prefix){
 		Date date = new Date();
 		String dateStr = new SimpleDateFormat("yyyyMMdd_HHmmss", new Locale("US")).format(date);
@@ -233,24 +251,24 @@ public abstract class AbstractUploadBackingBean<T> extends AbstractBackingBean<T
 		return "";
 	}
 	
-	public String getServletImgUrl(Integer projectId, String fileName, String type){
+	public String getServletImgUrl(String productCode, String fileName, String type){
 		
 		String url ="";
 		String context = WebUtils.getHostContextUrl()+"/attach_file/projattach";
 		
-		String param1 = "projid="+projectId;
+		String param1 = "projid="+productCode;
 		String param2 = "fname="+fileName;
 		String param3 = "ptype="+type;
 		
-		if(projectId != null){
+		if(productCode != null){
 			url = context+"?"+param1+"&"+param2+"&"+param3;
 		}
 		
 		return url;
 	}
 	
-	public String getServletDownloadUrl(Integer projectId, String fname, String type){
-		return AppUtils.getServletDownloadUrl(projectId, fname, type);
+	public String getServletDownloadUrl(String productCode, String fname, String type){
+		return AppUtils.getServletDownloadUrl(productCode, fname, type);
 	}
 	
 	public boolean deleteFile(String fileName){

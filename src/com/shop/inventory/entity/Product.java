@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -28,9 +27,6 @@ public class Product extends AbstractEntity {
 	@Column(name="detail")
 	private String detail;
 	
-	@Column(name="color")
-	private String color;
-	
 	@Column(name="cost_price")
 	private Double costPrice;
 	
@@ -43,13 +39,24 @@ public class Product extends AbstractEntity {
 	@Column(name="status")
 	private String status;
 	
-	@OneToOne(mappedBy="product", cascade=CascadeType.ALL)
-	private Inventory inventory;
+	@OneToMany(mappedBy="product", targetEntity=Inventory.class, cascade={CascadeType.ALL})	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<Inventory> inventories;
 	
 	@OneToMany(mappedBy="product", targetEntity=ProductAttach.class, cascade={CascadeType.ALL})	
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<ProductAttach> imgAttach;
 
+	public Integer getAvailable(){
+		Integer sumAvailable = 0;
+		if(inventories != null && inventories.size() > 0){
+			for(Inventory item : inventories){
+				sumAvailable += item.getAvailable();
+			}
+		}
+		return sumAvailable;
+	}
+	
 	public String getProductCode() {
 		return productCode;
 	}
@@ -74,14 +81,6 @@ public class Product extends AbstractEntity {
 		this.detail = detail;
 	}
 
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
 	public Date getLastSaleDate() {
 		return lastSaleDate;
 	}
@@ -90,12 +89,12 @@ public class Product extends AbstractEntity {
 		this.lastSaleDate = lastSaleDate;
 	}
 
-	public Inventory getInventory() {
-		return inventory;
+	public List<Inventory> getInventories() {
+		return inventories;
 	}
 
-	public void setInventory(Inventory inventory) {
-		this.inventory = inventory;
+	public void setInventories(List<Inventory> inventories) {
+		this.inventories = inventories;
 	}
 
 	public String getStatus() {
@@ -130,4 +129,5 @@ public class Product extends AbstractEntity {
 		this.imgAttach = imgAttach;
 	}
 
+	
 }

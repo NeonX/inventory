@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="inventory", schema="public")
@@ -24,10 +25,25 @@ public class Inventory {
 	@JoinColumn(name="product_code")
 	private Product product;
 	
-	private Long available;
+	private String size;
 	
-	private Long balance;
+	private String detail;
+	
+	private String color;
 
+	private Integer available;
+	
+	private Integer balance;
+	
+	@Transient
+	private Integer quantity = 0;
+	
+	public Inventory(){}
+	
+	public Inventory(Product product){
+		this.product = product;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -44,20 +60,53 @@ public class Inventory {
 		this.product = product;
 	}
 
-	public Long getAvailable() {
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Integer getAvailable() {
 		return available;
 	}
 
-	public void setAvailable(Long available) {
+	public void setAvailable(Integer available) {
 		this.available = available;
 	}
 
-	public Long getBalance() {
+	public Integer getBalance() {
 		return balance;
 	}
 
-	public void setBalance(Long balance) {
+	public void setBalance(Integer balance) {
 		this.balance = balance;
 	}
 
+	
 }

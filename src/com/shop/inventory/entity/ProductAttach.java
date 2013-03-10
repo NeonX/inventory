@@ -13,6 +13,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="product_attach", schema="public")
@@ -29,6 +30,12 @@ public class ProductAttach extends AbstractAttachment {
 	@Basic(fetch=FetchType.EAGER)
 	private Product product;
 
+	@Transient
+	private String fileServletUrl;
+	
+	@Transient
+	private String fileServletDownloadUrl;
+	
 	public Long getAttachId() {
 		return attachId;
 	}
@@ -43,6 +50,22 @@ public class ProductAttach extends AbstractAttachment {
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	public String getFileServletUrl() {
+		return fileServletUrl;
+	}
+
+	public void setFileServletUrl(String fileServletUrl) {
+		this.fileServletUrl = fileServletUrl;
+	}
+
+	public String getFileServletDownloadUrl() {
+		return fileServletDownloadUrl;
+	}
+
+	public void setFileServletDownloadUrl(String fileServletDownloadUrl) {
+		this.fileServletDownloadUrl = fileServletDownloadUrl;
 	}
 	
 	

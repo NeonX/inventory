@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 import javax.activation.MimetypesFileTypeMap;
 
@@ -262,31 +263,6 @@ public class AppUtils {
 		return Double.valueOf(twoDForm.format(d));
 	}
 	
-	public static Double calculateDistanceKm(String kmBeginStr, String kmEndStr) {
-
-		Double value = 0D;
-
-		try {
-			if((kmBeginStr != null && kmBeginStr.trim().length() > 0) && 
-					(kmEndStr != null && kmEndStr.trim().length() > 0)){
-				
-				kmBeginStr = kmBeginStr.replace("+", "");
-				kmEndStr = kmEndStr.replace("+", "");
-
-				Double kmBegin = new Double(kmBeginStr);
-				Double kmEnd = new Double(kmEndStr);
-
-				value += Math.abs(kmEnd - kmBegin);
-				value = value / 1000;
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return value;
-	}
-	
 	public static BigDecimal stringToBigDecimal(String value){
 		
 		BigDecimal result = new BigDecimal(0);
@@ -329,81 +305,19 @@ public class AppUtils {
 		return result;
 	}
 	
-	public static Double getWeightOfProject(BigDecimal projectCost, BigDecimal quantity, BigDecimal costPerUnit) {
-		try{
-			BigDecimal actCost = quantity.multiply(costPerUnit);
-			BigDecimal weightProj = actCost.multiply(new BigDecimal(100));
-			BigDecimal result = weightProj.divide(projectCost, 3, RoundingMode.HALF_UP);
-			
-			return roundTwoDecimals(result.doubleValue());
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return 0D;
-	}
-	
-	public static Double getWeightOfProjByProgress(BigDecimal percentProg, BigDecimal projCost, BigDecimal actCost ){
-		try{
-			BigDecimal actCostPrg = percentProg.divide(new BigDecimal(100), 3, RoundingMode.HALF_UP).multiply(actCost);
-			BigDecimal percentWeight = actCostPrg.multiply(new BigDecimal(100)).divide(projCost, 3, RoundingMode.HALF_UP);
-			return roundTwoDecimals(percentWeight.doubleValue());
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return 0D;
-	}
-	
-	public static String getServletDownloadUrl(Integer projectId, String fname, String type){
+	public static String getServletDownloadUrl(String productCode, String fname, String type){
 		String url ="";
 		String context = WebUtils.getHostContextUrl()+"/attach_file/downloadfile";
 		
-		String param1 = "projid="+projectId;
+		String param1 = "projid="+productCode;
 		String param2 = "fname="+fname;
 		String param3 = "ptype="+type;
 		
-		if(projectId != null){
+		if(productCode != null){
 			url = context+"?"+param1+"&"+param2+"&"+param3;
 		}
 		
 		return url;
-	}
-	
-	public static Double convertKmFormatToNum(String kmStr){
-		
-		Double value = 0D;
-		
-		try{
-			if(kmStr != null && kmStr.trim().length() > 0){
-				kmStr = kmStr.replace("+", "");
-				value = new Double(kmStr);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		return value;
-	}
-	
-	public static String convertKmValToKmPattern(Double kmVal){
-		
-		String result = "";
-		try{
-			if(kmVal != null && kmVal >= 0){
-				double km = Math.floor(kmVal/1000);
-				double m = kmVal % 1000;
-				
-				if(m > 0){
-					result = numberFormater(km,"#,###.###")+"+"+numberFormater(m, "000.###");
-				}else{
-					result = numberFormater(km,"#,###.###")+"+"+numberFormater(m, "000");
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return result;
-		
 	}
 	
 	public static Double roundUpDoubleValue(Double doubleVal){
@@ -419,5 +333,19 @@ public class AppUtils {
 		}
 		
 		return 0D;
+	}
+	
+	public static String generateProductCodeStr(){
+		
+		Long code = null;
+		long start = 1000000;
+		long end = 9999999;
+		long range = end - start + 1;
+		Random rand = new Random();
+		
+		long fraction = (long) (range * rand.nextDouble());
+		code = fraction + start;
+	
+		return code.toString();
 	}
 }

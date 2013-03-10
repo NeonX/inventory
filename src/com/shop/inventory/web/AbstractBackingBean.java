@@ -67,4 +67,10 @@ public abstract class AbstractBackingBean<T> {
 		redirect.setViewId("/security_error.xhtml");
 		redirect.execute();
 	}
+	
+	protected void forceRedirectPage(String viewId){
+		Redirect redirect = Redirect.instance();
+		redirect.setViewId(viewId);
+		redirect.execute();
+	}
 }
