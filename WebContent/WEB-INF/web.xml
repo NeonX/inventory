@@ -83,41 +83,15 @@
 		<servlet-name>Seam Resource Servlet</servlet-name>
 		<url-pattern>/seam/resource/*</url-pattern>
 	</servlet-mapping>
+	
+
 	<servlet>
-		<servlet-name>ServletProjectDataAttachDownload</servlet-name>
-		<servlet-class>
-			com.pte.floodmap.web.servlet.ServletProjectDataAttachDownload</servlet-class>
+		<servlet-name>ServletProductAttachDownload</servlet-name>
+		<servlet-class>com.shop.inventory.web.servlet.ServletProductAttachDownload</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>ServletProjectDataAttachDownload</servlet-name>
+		<servlet-name>ServletProductAttachDownload</servlet-name>
 		<url-pattern>/attach_file/projattach</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>ServletProjectDataAttachFoceDownload</servlet-name>
-		<servlet-class>
-			com.pte.floodmap.web.servlet.ServletProjectDataAttachFoceDownload</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ServletProjectDataAttachFoceDownload</servlet-name>
-		<url-pattern>/attach_file/downloadfile</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>ServletDamageSurfaceImg</servlet-name>
-		<servlet-class>com.pte.floodmap.web.servlet.ServletDamageSurfaceImg</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ServletDamageSurfaceImg</servlet-name>
-		<url-pattern>/attach_file/surfacefile</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>ServletDamageLevelImg</servlet-name>
-		<servlet-class>com.pte.floodmap.web.servlet.ServletDamageLevelImg</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ServletDamageLevelImg</servlet-name>
-		<url-pattern>/attach_file/damageLevelfile</url-pattern>
 	</servlet-mapping>
  
 	<session-config>

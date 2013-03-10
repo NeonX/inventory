@@ -14,9 +14,9 @@
 		<h:form id="productlistFrm">
 				<rich:spacer height="20"/>
 				<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
-					<h:commandButton  value="เพิ่ม/อัพเดทรายการสินค้า"
+					<h:commandButton  value="เพิ่มรายการสินค้า"
 						onclick="setWaitCursor();" oncomplete="setDefaultCursor();"
-						action="#{productListManage.directToProductAdd()}"/>
+						action="#{productListManage.directToProductForm()}"/>
 					<rich:spacer width="30"/>
 					<h:commandButton  value="ทำรายการสั่งซื้อ"
 						onclick="setWaitCursor();" oncomplete="setDefaultCursor();"
@@ -32,65 +32,65 @@
 					<a4j:commandButton value="ดูทั้งหมด"/>
 				</h:panelGrid>
 				<rich:spacer height="10"/>
-				<rich:dataTable rows="10" id="dataList" value="#{1}"
-					rowKeyVar="rowId" width="100%" columnsWidth="13%,13%,17%,13%,6%,9%,9%,11%,11%"
+				<rich:dataTable rows="10" id="dataList" value="#{productListManage.productList}" var="product"
+					rowKeyVar="rowId" width="100%" columnsWidth="10%,10%,16%,24%,10%,10%,10%,10%"
 					onRowMouseOver="this.style.backgroundColor='#FFFFDD'"
                     onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
 							<rich:column style="text-align:center;">
 								<f:facet name="header">
 									<h:outputText value="รหัสสินค้า" />
 								</f:facet>
-								<h:outputText value="3019283746" />
+								<h:outputText value="#{product.productCode}" />
 							</rich:column>
 							<rich:column style="text-align:center;">
 								<f:facet name="header">
 									<h:outputText value="รูปภาพ" />
 								</f:facet>
-								<h:graphicImage value="/imgs/test.jpg" width="100px"/>
+								<h:graphicImage value="/imgs/noimg.png" width="100px"/>
+							</rich:column>
+							<rich:column style="text-algn:center;">
+								<f:facet name="header">
+									<h:outputText value="ชื่อสินค้า" />
+								</f:facet>
+								<h:outputText value="#{product.productName}" />
 							</rich:column> 
 							<rich:column>
 								<f:facet name="header">
 									<h:outputText value="รายละเอียด" />
 								</f:facet>
-								<h:outputText value="maxi ชีฟองเปิดไหล่ลายกุหลาบสี pastel แสนหวาน ต่อกระโปรงพลีต ทรงพริ้ว" />
-							</rich:column> 
-							<rich:column style="text-align:center;">
-								<f:facet name="header">
-									<h:outputText value="ขนาด" />
-								</f:facet>
-								<h:outputText value="อก 34นิ้ว ใต้อก ช่วงเอวบน ยืดได้ถึง28นิ้ว ความยาว 46นิ้ว วงแขน 20นิ้ว สะโพก free" />
-							</rich:column> 
-							<rich:column style="text-align:center;">
-								<f:facet name="header">
-									<h:outputText value="สี" />
-								</f:facet>
-								<h:outputText value="ขาว" />
+								<h:outputText value="#{product.detail}" />
 							</rich:column>
 							<rich:column style="text-align:center;background-color:#DDFFFF;">
 								<f:facet name="header">
 									<h:outputText value="ราคาขาย/ชิ้น (บาท)" />
 								</f:facet>
-								<h:outputText value="#{webUtils.numberFormater(690, '#,##0.00')}" />
+								<h:outputText value="#{webUtils.numberFormater(product.sellPrice, '#,##0.00')}" />
 							</rich:column>
-							<rich:column style="text-align:center;background-color:#DDFFFF;">
+							<rich:column style="text-align:center;#{(product.available &lt;= 0)?'background-color:#FF3300;':'background-color:#DDFFFF;'}">
 								<f:facet name="header">
 									<h:outputText value="คงเหลือ" />
 								</f:facet>
-								<h:outputText value="10" />
+								<h:outputText value="#{webUtils.numberFormater(product.available, '#,###.##')}" />
+								<rich:spacer width="10"/>
+								<a4j:commandButton image="/imgs/expand.png" title="details"
+									action="#{productListManage.getProductInventory(product.productCode)}"
+									oncomplete="#{rich:component('expand_detail_modal')}.show();"
+									reRender="expandDetail"/>
 							</rich:column> 
 							<rich:column style="text-align:center;">
 								<f:facet name="header">
 									<h:outputText value="ขายล่าสุด" />
 								</f:facet>
-								<h:outputText value="13 ม.ค.2556" />
+								<h:outputText value="#{webUtils.dateToString(product.lastSaleDate, 'dd MMMyy')}" rendered="#{product.lastSaleDate != null}"/>
+								<h:outputText value="N/A" rendered="#{!(product.lastSaleDate != null)}"/>
 							</rich:column> 
 							<rich:column style="text-align:center;">
 								<f:facet name="header">
-									<h:outputText value="อัพเดท / ยกเลิกขาย" />
+									<h:outputText value="แก้ไข / ยกเลิกขาย" />
 								</f:facet>
 								<h:commandButton image="/imgs/edit.png" style="cursor:pointer;width:22px;"
 									title="แก้ไข" onclick="setWaitCursor();" oncomplete="setDefaultCursor();"/>
-								<rich:spacer width="10px" />
+								<rich:spacer width="15px" />
 								<h:commandButton image="/imgs/delete.png" style="cursor:pointer;width:22px;"
 									title="ยกเลิกขาย" onclick="setWaitCursor();" oncomplete="setDefaultCursor();" />
 							</rich:column>
@@ -100,6 +100,60 @@
 				</rich:dataTable>
 
 		</h:form>
+		
+		<rich:modalPanel id="expand_detail_modal" width="600" autosized="true">
+	        <f:facet name="header">
+	            <h:panelGroup>
+	                <h:outputText value="ขนาด, สี"></h:outputText>
+	            </h:panelGroup>
+	        </f:facet>
+	        <f:facet name="controls">
+	            <h:panelGroup>
+	                <h:graphicImage value="/imgs/delete_sm.png" id="hidelink" style="cursor:pointer;"/>
+	                <rich:componentControl for="expand_detail_modal" attachTo="hidelink" operation="hide" event="onclick"/>
+	            </h:panelGroup>
+	        </f:facet>
+	       	<h:panelGroup id="expandDetail">
+	       		<h:outputText value="ไม่พบข้อมูล" styleClass="msg_fail" style="font-size:14px;"
+	       			rendered="#{productListManage.inventories == null || productListManage.inventories.size() == 0}"/>
+	       		<rich:dataTable value="#{productListManage.inventories}" var="item"
+					width="500" columnsWidth="15%,55%,15%,15%"
+					rendered="#{productListManage.inventories != null &amp;&amp; productListManage.inventories.size() &gt; 0}">
+					<rich:column style="text-align:center;">
+						<f:facet name="header">
+							<h:outputText value="ขนาด" />
+						</f:facet>
+						<h:outputText value="#{item.size}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="รายละเอียด" />
+						</f:facet>
+						<h:outputText value="#{item.detail}" />
+					</rich:column>
+					<rich:column style="text-align:center;">
+						<f:facet name="header">
+							<h:outputText value="สี" />
+						</f:facet>
+						<h:outputText value="#{item.color}" />
+					</rich:column>
+					<rich:column style="text-align:center;">
+						<f:facet name="header">
+							<h:outputText value="คงเหลือ (ชิ้น)" />
+						</f:facet>
+						<h:outputText value="#{item.available}" />
+					</rich:column>
+					<f:facet name="footer">
+						<rich:columnGroup>
+                            <rich:column colspan="3" style="text-align:center;">รวม</rich:column>
+                            <rich:column style="text-align:center;">
+                                <h:outputText value="#{productListManage.sumInventory}"/>
+                            </rich:column>
+                        </rich:columnGroup>
+					</f:facet>
+				</rich:dataTable>
+	       	</h:panelGroup>
+	    </rich:modalPanel>
 		
 	</ui:define>
 

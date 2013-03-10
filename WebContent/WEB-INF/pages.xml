@@ -17,9 +17,9 @@
 	</page>
     
 	<page view-id="/product/*" login-required="false">
-		<navigation from-action="#{productListManage.directToProductAdd()}">
+		<navigation from-action="#{productListManage.directToProductForm()}">
 			<rule if-outcome="success">
-				<redirect view-id="/product/productadd.xhtml"/>
+				<redirect view-id="/product/productform.xhtml"/>
 			</rule>
 		</navigation>
 		<navigation from-action="#{productAddManage.directToProductList()}">

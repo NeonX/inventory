@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/common/template.xhtml">
+
+	<ui:define name="content">
+	
+		<h:form id="productaddFrm">
+	
+			<h:outputText value="บันทึกเรียบร้อย" styleClass="msg_success" style="font-size:14px;"
+				rendered="#{productFormManage.saveStatus != null &amp;&amp; productFormManage.saveStatus}"/>
+			<h:outputText value="ไม่สามารถบันทึกข้อมูลได้" styleClass="msg_fail" style="font-size:14px;"
+				rendered="#{productFormManage.saveStatus != null &amp;&amp; !productFormManage.saveStatus}"/>
+	
+			<table border="0">
+			<tr>
+				<td>
+					<table border="0">
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="รหัสสินค้า" />
+						</td>
+						<td class="contentForm">
+							<h:outputText value="#{productFormManage.product.productCode}" style="font-size:13px;font-weight:bold;color:blue;"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="ชื่อสินค้า" />
+						</td>
+						<td class="contentForm">
+							<h:inputText style="width:200px;" value="#{productFormManage.product.productName}" required="true"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="รายละเอียด" />
+						</td>
+						<td class="contentForm">
+							<h:inputTextarea cols="30" rows="7"
+								value="#{productFormManage.product.detail}"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="ขนาด,สี" />
+						</td>
+						<td class="contentForm">
+							<a4j:region>
+							<a4j:commandLink value="เพิ่มรายละเอียด" style="color:blue;text-decoration:underline;"
+								action="#{productFormManage.prepareNewInventory()}"
+								reRender="size_detail_modal_frm"
+								oncomplete="#{rich:component('size_detail_modal')}.show();"/>
+							</a4j:region>
+							<h:panelGroup id="inventoriesList">
+							<rich:dataTable value="#{productFormManage.product.inventories}" var="item"
+								width="500" columnsWidth="15%,55%,15%,15%"
+								rendered="#{productFormManage.product.inventories.size() &gt; 0}">
+								<rich:column style="text-align:center;">
+									<f:facet name="header">
+										<h:outputText value="ขนาด" />
+									</f:facet>
+									<h:outputText value="#{item.size}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="รายละเอียด" />
+									</f:facet>
+									<h:outputText value="#{item.detail}" />
+								</rich:column>
+								<rich:column style="text-align:center;">
+									<f:facet name="header">
+										<h:outputText value="สี" />
+									</f:facet>
+									<h:outputText value="#{item.color}" />
+								</rich:column>
+								<rich:column style="text-align:center;">
+									<f:facet name="header">
+										<h:outputText value="จำนวน (ชิ้น)" />
+									</f:facet>
+									<h:outputText value="#{item.quantity}" />
+								</rich:column>
+							</rich:dataTable>
+							</h:panelGroup>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="ราคาทุน / ชิ้น" />
+						</td>
+						<td class="contentForm">
+							<h:inputText style="width:200px;" onblur="checkNumber(this);" required="true"
+								value="#{productFormManage.product.costPrice}"/>
+							<h:outputText value=" บาท" />
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="ราคาขาย / ชิ้น" />
+						</td>
+						<td class="contentForm">
+							<h:inputText style="width:200px;" onblur="checkNumber(this);" required="true"
+								value="#{productFormManage.product.sellPrice}"/>
+							<h:outputText value=" บาท" />
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							&nbsp;
+						</td>
+						<td class="contentForm">
+							<a4j:region>
+								<a4j:commandButton value="Attach image" action="#{productFormManage.setDoUploadImg()}"
+									oncomplete="#{rich:component('attach_modal')}.show();" reRender="attach_modal_frm"/>
+							</a4j:region>
+						</td>
+					</tr>
+					<tr>
+						<td><rich:spacer/></td>
+						<td>
+							<div style="text-align:center;padding-top:20px;">
+								<a4j:commandButton value="บันทึก" action="#{productFormManage.saveProduct()}"
+									reRender="productaddFrm,size_detail_modal" rendered="#{productFormManage.saveStatus == null}"/>
+								<a4j:commandButton value="&lt;&lt; กลับไปหน้ารายการ" action="#{productFormManage.directToProductList()}"
+									rendered="#{productFormManage.saveStatus != null &amp;&amp; productFormManage.saveStatus}"/>
+								<rich:spacer width="30"/>
+								<a4j:commandButton value="เพิ่มรายการสินค้า" action="#{productFormManage.init()}"
+									reRender="productaddFrm,size_detail_modal" rendered="#{productFormManage.saveStatus != null &amp;&amp; productFormManage.saveStatus}"/>
+								<a4j:region>
+									<a4j:commandButton value="ยกเลิก" action="#{productFormManage.directToProductList()}"
+										rendered="#{productFormManage.saveStatus == null}"/>
+								</a4j:region>
+							</div>
+						</td>
+					</tr>
+				</table>
+				</td>
+				<td valign="top">
+					<h:panelGroup id="imgView">
+						<h:panelGroup rendered="#{!(productFormManage.attachList != null &amp;&amp; productFormManage.attachList.size() &gt; 0)}">
+						<ui:repeat value="#{productFormManage.tmpAttachList}" var="item" >
+							<h:panelGrid columns="2">
+								<h:graphicImage value="/imgs/attachment2.png" />
+								<h:outputText value="#{item.originFilename}" />
+							</h:panelGrid>
+						</ui:repeat>
+						</h:panelGroup>
+						<rich:dataGrid id="imgGrid" columns="#{productFormManage.viewCol}" value="#{productFormManage.attachList}" var="item"
+							rendered="#{productFormManage.attachList != null &amp;&amp; productFormManage.attachList.size() &gt; 0}">
+							<h:graphicImage url="#{item.fileServletUrl}" width="150"
+								onclick="showImg('#{item.fileServletUrl}');"
+								style="cursor:pointer;"/>
+						</rich:dataGrid>
+					</h:panelGroup>
+				</td>
+			</tr>
+			</table>
+		</h:form>
+		
+		<rich:modalPanel id="size_detail_modal" width="600" autosized="true">
+	        <f:facet name="header">
+	            <h:panelGroup>
+	                <h:outputText value="ขนาด, สี"></h:outputText>
+	            </h:panelGroup>
+	        </f:facet>
+	        <f:facet name="controls">
+	            <h:panelGroup>
+	                <h:graphicImage value="/imgs/delete_sm.png" styleClass="hidelink" id="hidelink"/>
+	                <rich:componentControl for="size_detail_modal" attachTo="hidelink" operation="hide" event="onclick"/>
+	            </h:panelGroup>
+	        </f:facet>
+	       	<h:form id="size_detail_modal_frm">
+	       		<h:panelGrid columns="12">
+					<rich:comboBox id="sizeCombo" defaultLabel="ขนาด" width="70" value="#{productFormManage.sizeSelected}" 
+						enableManualInput="false">
+						<f:selectItem itemLabel="S" itemValue="S"/>
+						<f:selectItem itemLabel="M" itemValue="M"/>
+						<f:selectItem itemLabel="L" itemValue="L"/>
+						<f:selectItem itemLabel="XL" itemValue="XL"/>
+						<f:selectItem itemLabel="Free size" itemValue="Free size"/>
+						<f:selectItem itemLabel="NONE" itemValue="NONE"/>
+					</rich:comboBox>
+					<rich:spacer width="10"/>
+					<h:outputText value="รายละเอียด : " />
+					<h:inputText value="#{productFormManage.inventory.detail}" />
+					<rich:spacer width="10"/>
+					<h:outputText value="สี : " />
+					<h:inputText value="#{productFormManage.inventory.color}" style="width:50px;"/>
+					<rich:spacer width="10"/>
+					<h:outputText value="จำนวน : " />
+					<h:inputText id="quantity" value="#{productFormManage.inventory.quantity}" 
+						style="width:50px;" onblur="checkInt(this);"/>
+					<rich:spacer width="5"/>
+					<h:outputText value="ชิ้น" />
+				</h:panelGrid>
+				<div style="padding-top:10px;padding-bottom:10px;width: 550px;">
+					<a4j:commandButton value="เพิ่ม" action="#{productFormManage.doAddInventory()}"
+						oncomplete="#{rich:component('size_detail_modal')}.hide();" 
+						reRender="inventoriesList,size_detail_modal"/>
+				</div>
+	       	</h:form>
+	    </rich:modalPanel>
+		
+		<rich:modalPanel id="attach_modal" width="600" autosized="true">
+	        <f:facet name="header">
+	            <h:panelGroup>
+	                <h:outputText value="Attach files"></h:outputText>
+	            </h:panelGroup>
+	        </f:facet>
+	        <f:facet name="controls">
+	            <rich:spacer/>
+	        </f:facet>
+	        <h:panelGrid columns="1" cellpadding="0" cellspacing="1">
+				<h:outputText value="ขนาดไฟล์อัพโหลดไม่เกิน #{webUtils.numberFormater((productFormManage.imgSizeBytesAllows / 1000),'#,###.##')} KB" styleClass="msg_normal"/>
+				<h:outputText value="(รองรับไฟล์ jpg, jpeg, gif, png, bmp)" styleClass="msg_normal"/>
+			</h:panelGrid>
+	       	<h:form id="attach_modal_frm">
+	       		<rich:dataList id="fNameOverList" value="#{productFormManage.fileOverList}" var="fName">
+					<h:outputText value="#{fName}" styleClass="msg_fail" />
+				</rich:dataList>
+	       		<rich:fileUpload id="uploadPanel" fileUploadListener="#{productFormManage.doListenerUpload}"
+						maxFilesQuantity="#{productFormManage.uploadsAvailable}"
+						acceptedTypes="jpg, jpeg, gif, png" ajaxSingle="true" allowFlash="auto"
+						onuploadcomplete="doRerenderImgList();doMoveFileFromTmp();">
+						<f:facet name="label">
+                			<h:outputText value="{_KB}KB from {KB}KB uploaded --- {mm}:{ss}" />
+        				</f:facet>
+				</rich:fileUpload>
+				<div style="width:100%;text-align:center;padding-top:10px;">
+					<a4j:commandButton id="closeImgUp" value="ปิด" style="width:100px;" 
+						onclick="#{rich:component('attach_modal')}.hide();"/>
+				</div>
+				<a4j:jsFunction ajaxSingle="true" name="doRerenderImgList" reRender="imgView,fNameOverList"/>
+				<a4j:jsFunction ajaxSingle="true" name="doMoveFileFromTmp" action="#{productFormManage.doMoveFileFromTmp()}"/>
+	       	</h:form>
+	    </rich:modalPanel>
+		
+	</ui:define>
+
+</ui:composition>
