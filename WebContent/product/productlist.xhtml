@@ -46,7 +46,8 @@
 								<f:facet name="header">
 									<h:outputText value="รูปภาพ" />
 								</f:facet>
-								<h:graphicImage value="/imgs/noimg.png" width="100px"/>
+								<h:graphicImage value="/imgs/noimg.png" width="100px" rendered="#{product.fileServletUrl == null}"/>
+								<h:graphicImage url="#{product.fileServletUrl}" width="100" rendered="#{product.fileServletUrl != null}"/>
 							</rich:column>
 							<rich:column style="text-algn:center;">
 								<f:facet name="header">
@@ -89,7 +90,7 @@
 									<h:outputText value="แก้ไข / ยกเลิกขาย" />
 								</f:facet>
 								<h:commandButton image="/imgs/edit.png" style="cursor:pointer;width:22px;"
-									title="แก้ไข" onclick="setWaitCursor();" oncomplete="setDefaultCursor();"/>
+									title="แก้ไข" onclick="setWaitCursor();" action="#{productListManage.directToProductForm(product.productCode)}"/>
 								<rich:spacer width="15px" />
 								<h:commandButton image="/imgs/delete.png" style="cursor:pointer;width:22px;"
 									title="ยกเลิกขาย" onclick="setWaitCursor();" oncomplete="setDefaultCursor();" />
@@ -117,7 +118,7 @@
 	       		<h:outputText value="ไม่พบข้อมูล" styleClass="msg_fail" style="font-size:14px;"
 	       			rendered="#{productListManage.inventories == null || productListManage.inventories.size() == 0}"/>
 	       		<rich:dataTable value="#{productListManage.inventories}" var="item"
-					width="500" columnsWidth="15%,55%,15%,15%"
+					width="550" columnsWidth="15%,45%,10%,15%,15%"
 					rendered="#{productListManage.inventories != null &amp;&amp; productListManage.inventories.size() &gt; 0}">
 					<rich:column style="text-align:center;">
 						<f:facet name="header">
@@ -143,12 +144,19 @@
 						</f:facet>
 						<h:outputText value="#{item.available}" />
 					</rich:column>
+					<rich:column style="text-align:center;">
+						<f:facet name="header">
+							<h:outputText value="จอง/ขาย" />
+						</f:facet>
+						<a4j:commandButton image="/imgs/add_to_cart.png"/>
+					</rich:column>
 					<f:facet name="footer">
 						<rich:columnGroup>
                             <rich:column colspan="3" style="text-align:center;">รวม</rich:column>
                             <rich:column style="text-align:center;">
                                 <h:outputText value="#{productListManage.sumInventory}"/>
                             </rich:column>
+                            <rich:column><rich:spacer/></rich:column>
                         </rich:columnGroup>
 					</f:facet>
 				</rich:dataTable>

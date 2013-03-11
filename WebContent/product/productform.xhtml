@@ -60,31 +60,51 @@
 							</a4j:region>
 							<h:panelGroup id="inventoriesList">
 							<rich:dataTable value="#{productFormManage.product.inventories}" var="item"
-								width="500" columnsWidth="15%,55%,15%,15%"
+								width="500" 
 								rendered="#{productFormManage.product.inventories.size() &gt; 0}">
-								<rich:column style="text-align:center;">
+								<rich:column style="text-align:center;" width="15%">
 									<f:facet name="header">
 										<h:outputText value="ขนาด" />
 									</f:facet>
 									<h:outputText value="#{item.size}" />
 								</rich:column>
-								<rich:column>
+								<rich:column width="55%">
 									<f:facet name="header">
 										<h:outputText value="รายละเอียด" />
 									</f:facet>
 									<h:outputText value="#{item.detail}" />
 								</rich:column>
-								<rich:column style="text-align:center;">
+								<rich:column style="text-align:center;" width="15%">
 									<f:facet name="header">
 										<h:outputText value="สี" />
 									</f:facet>
 									<h:outputText value="#{item.color}" />
 								</rich:column>
-								<rich:column style="text-align:center;">
+								<rich:column style="text-align:center;" width="15%" rendered="#{!productFormManage.onEditMode}">
 									<f:facet name="header">
 										<h:outputText value="จำนวน (ชิ้น)" />
 									</f:facet>
 									<h:outputText value="#{item.quantity}" />
+								</rich:column>
+								<rich:column style="text-align:center;" width="15%" rendered="#{productFormManage.onEditMode}">
+									<f:facet name="header">
+										<h:panelGrid width="100%" columns="1" style="text-align:center;">
+											<h:outputText value="จำนวน" />
+											<h:outputText value="ที่ขายได้(ชิ้น)" />
+										</h:panelGrid>
+									</f:facet>
+									<h:outputText value="#{item.available}" />
+								</rich:column>
+								<rich:column style="text-align:center;" width="15%" rendered="#{productFormManage.onEditMode}">
+									<f:facet name="header">
+										<h:panelGrid width="100%" columns="1" style="text-align:center;">
+											<h:outputText value="จำนวน" />
+											<h:outputText value="ทั้งหมด(ชิ้น)" />
+										</h:panelGrid>
+									</f:facet>
+									<h:outputText value="#{item.balance}" />
+									<rich:spacer width="5"/>
+									<a4j:commandButton image="/imgs/expand.png" title="เพิ่มสินค้า"/>
 								</rich:column>
 							</rich:dataTable>
 							</h:panelGroup>
@@ -130,8 +150,9 @@
 								<a4j:commandButton value="&lt;&lt; กลับไปหน้ารายการ" action="#{productFormManage.directToProductList()}"
 									rendered="#{productFormManage.saveStatus != null &amp;&amp; productFormManage.saveStatus}"/>
 								<rich:spacer width="30"/>
-								<a4j:commandButton value="เพิ่มรายการสินค้า" action="#{productFormManage.init()}"
-									reRender="productaddFrm,size_detail_modal" rendered="#{productFormManage.saveStatus != null &amp;&amp; productFormManage.saveStatus}"/>
+								<a4j:commandButton value="เพิ่มรายการสินค้า" action="#{productFormManage.prepareNewProduct()}"
+									reRender="productaddFrm,size_detail_modal" 
+									rendered="#{productFormManage.saveStatus != null &amp;&amp; productFormManage.saveStatus &amp;&amp; !productFormManage.onEditMode}"/>
 								<a4j:region>
 									<a4j:commandButton value="ยกเลิก" action="#{productFormManage.directToProductList()}"
 										rendered="#{productFormManage.saveStatus == null}"/>
@@ -153,9 +174,11 @@
 						</h:panelGroup>
 						<rich:dataGrid id="imgGrid" columns="#{productFormManage.viewCol}" value="#{productFormManage.attachList}" var="item"
 							rendered="#{productFormManage.attachList != null &amp;&amp; productFormManage.attachList.size() &gt; 0}">
-							<h:graphicImage url="#{item.fileServletUrl}" width="150"
-								onclick="showImg('#{item.fileServletUrl}');"
-								style="cursor:pointer;"/>
+							<h:panelGrid columns="1">
+								<a4j:commandButton image="/imgs/delete_12px.png"/>
+								<h:graphicImage url="#{item.fileServletUrl}" width="150"
+									onclick="showImg('#{item.fileServletUrl}');" style="cursor:pointer;"/>
+							</h:panelGrid>
 						</rich:dataGrid>
 					</h:panelGroup>
 				</td>
