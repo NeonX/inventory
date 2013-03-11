@@ -57,8 +57,8 @@ a:hover{
 	text-align:right;
 	vertical-align:top;
 	background-color:#dceafc;
-	padding:7px 5px 7px 5px;
-	width:155px;
+	padding:7px 5px 7px 15px;
+	/*width:155px;*/
 	font-weight:bold;
 	color:#444444;
 	font-size:12px;
