@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -47,6 +48,9 @@ public class Product extends AbstractEntity {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<ProductAttach> imgAttach;
 
+	@Transient
+	private String fileServletUrl;
+	
 	public Integer getAvailable(){
 		Integer sumAvailable = 0;
 		if(inventories != null && inventories.size() > 0){
@@ -127,6 +131,14 @@ public class Product extends AbstractEntity {
 
 	public void setImgAttach(List<ProductAttach> imgAttach) {
 		this.imgAttach = imgAttach;
+	}
+
+	public String getFileServletUrl() {
+		return fileServletUrl;
+	}
+
+	public void setFileServletUrl(String fileServletUrl) {
+		this.fileServletUrl = fileServletUrl;
 	}
 
 	

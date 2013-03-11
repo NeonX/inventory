@@ -15,6 +15,10 @@ public class ProductService {
 	private InventoryDao inventoryDao;
 	private ProductAttachDao productAttachDao;
 
+	public Product getProduct(String productCode){
+		return productDao.getProduct(productCode);
+	}
+	
 	public List<Product> getAllProduct(){
 		return productDao.getAllProduct();
 	}

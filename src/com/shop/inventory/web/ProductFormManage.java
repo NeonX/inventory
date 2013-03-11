@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.richfaces.model.UploadItem;
@@ -26,6 +27,7 @@ public class ProductFormManage extends AbstractUploadBackingBean<ProductFormMana
 	private Product product;
 	private Inventory inventory;
 	private String sizeSelected;
+	private boolean onEditMode = false;
 	
 	private List<ProductAttach> attachList = new LinkedList<ProductAttach>();
 	private List<ProductAttach> tmpAttachList = new LinkedList<ProductAttach>();
@@ -34,6 +36,9 @@ public class ProductFormManage extends AbstractUploadBackingBean<ProductFormMana
 	
 	private Boolean saveStatus;
 	
+	@In(required=false, scope=ScopeType.SESSION)
+	String productCodeParam;
+	
 	public ProductFormManage() {
 		super(ProductFormManage.class);
 		// TODO Auto-generated constructor stub
@@ -41,6 +46,22 @@ public class ProductFormManage extends AbstractUploadBackingBean<ProductFormMana
 
 	@Create
 	public void init(){
+		
+		if(productCodeParam != null){
+			product = productService.getProduct(productCodeParam);
+			if(product != null){
+				onEditMode = true;
+				prepareAttachList();
+			}else{
+				prepareNewProduct();
+			}
+		}else{
+			prepareNewProduct();
+		}
+
+	}
+
+	public void prepareNewProduct(){
 		saveStatus = null;
 		inventory = null;
 		attachList.clear();
@@ -116,10 +137,11 @@ public class ProductFormManage extends AbstractUploadBackingBean<ProductFormMana
 			item.setFileServletDownloadUrl(getServletDownloadUrl(product.getProductCode(), item.getReferFilename(), item.getAttachType()));
 		}
 		
-		prepareEmptyBean(attachList);
+//		prepareEmptyBean(attachList);
 		
 	}
 	
+	@SuppressWarnings("unused")
 	private void prepareEmptyBean(List<ProductAttach> attachList){
 		if(attachList != null && attachList.size() > 0){
 			int size = attachList.size();
@@ -266,5 +288,15 @@ public class ProductFormManage extends AbstractUploadBackingBean<ProductFormMana
 	public void setTmpAttachList(List<ProductAttach> tmpAttachList) {
 		this.tmpAttachList = tmpAttachList;
 	}
+
+	public boolean getOnEditMode() {
+		return onEditMode;
+	}
+
+	public void setOnEditMode(boolean onEditMode) {
+		this.onEditMode = onEditMode;
+	}
+
+
 
 }
