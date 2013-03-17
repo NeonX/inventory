@@ -20,16 +20,22 @@
 					<rich:spacer width="30"/>
 					<h:commandButton  value="ทำรายการสั่งซื้อ"
 						onclick="setWaitCursor();" oncomplete="setDefaultCursor();"
-						action="#{productListManage.directToOrderAdd()}"/>
+						action="#{productListManage.directToOrderForm()}"/>
 				</h:panelGrid>
 				<rich:spacer height="30"/>
-				<h:panelGrid columns="6">
+				<h:panelGrid id="searchPanel" columns="11">
 					<h:outputText value="รหัสสินค้า :" style="font-size:13px;font-weight:bold;"/>
-					<h:inputText value="" style="width:200px;"/>
+					<h:inputText value="#{productListManage.productCodeSearch}" style="width:100px;"/>
 					<rich:spacer width="10"/>
-					<a4j:commandButton value="ค้นหา"/>
+					<h:outputText value="ชื่อสินค้า :" style="font-size:13px;font-weight:bold;"/>
+					<h:inputText value="#{productListManage.productNameSearch}" style="width:200px;"/>
 					<rich:spacer width="10"/>
-					<a4j:commandButton value="ดูทั้งหมด"/>
+					<a4j:commandButton value="ค้นหา" action="#{productListManage.doSearchProduct()}" reRender="searchPanel,dataList"/>
+					<rich:spacer width="10"/>
+					<a4j:commandButton value="ดูทั้งหมด" action="#{productListManage.init()}" reRender="dataList,searchPanel"/>
+					<rich:spacer width="10"/>
+					<h:outputText value="ไม่พบสินค้าที่ค้นหา" styleClass="msg_fail" 
+						rendered="#{productListManage.searchResultEmpty != null &amp;&amp; productListManage.searchResultEmpty}"/>
 				</h:panelGrid>
 				<rich:spacer height="10"/>
 				<rich:dataTable rows="10" id="dataList" value="#{productListManage.productList}" var="product"
@@ -138,7 +144,7 @@
 						</f:facet>
 						<h:outputText value="#{item.color}" />
 					</rich:column>
-					<rich:column style="text-align:center;">
+					<rich:column style="text-align:center;#{(item.available &lt;= 0)?'background-color:#FF3300;':'background-color:#DDFFFF;'}">
 						<f:facet name="header">
 							<h:outputText value="คงเหลือ (ชิ้น)" />
 						</f:facet>

@@ -62,49 +62,57 @@
 							<rich:dataTable value="#{productFormManage.product.inventories}" var="item"
 								width="500" 
 								rendered="#{productFormManage.product.inventories.size() &gt; 0}">
-								<rich:column style="text-align:center;" width="15%">
+								<rich:column style="text-align:center;" width="14%">
 									<f:facet name="header">
 										<h:outputText value="ขนาด" />
 									</f:facet>
 									<h:outputText value="#{item.size}" />
 								</rich:column>
-								<rich:column width="55%">
+								<rich:column width="31%">
 									<f:facet name="header">
 										<h:outputText value="รายละเอียด" />
 									</f:facet>
 									<h:outputText value="#{item.detail}" />
 								</rich:column>
-								<rich:column style="text-align:center;" width="15%">
+								<rich:column style="text-align:center;" width="14%">
 									<f:facet name="header">
 										<h:outputText value="สี" />
 									</f:facet>
 									<h:outputText value="#{item.color}" />
 								</rich:column>
-								<rich:column style="text-align:center;" width="15%" rendered="#{!productFormManage.onEditMode}">
-									<f:facet name="header">
-										<h:outputText value="จำนวน (ชิ้น)" />
-									</f:facet>
-									<h:outputText value="#{item.quantity}" />
-								</rich:column>
-								<rich:column style="text-align:center;" width="15%" rendered="#{productFormManage.onEditMode}">
+								<rich:column style="text-align:center;" width="14%">
 									<f:facet name="header">
 										<h:panelGrid width="100%" columns="1" style="text-align:center;">
 											<h:outputText value="จำนวน" />
-											<h:outputText value="ที่ขายได้(ชิ้น)" />
+											<h:outputText value="ที่ขายได้" />
 										</h:panelGrid>
 									</f:facet>
 									<h:outputText value="#{item.available}" />
 								</rich:column>
-								<rich:column style="text-align:center;" width="15%" rendered="#{productFormManage.onEditMode}">
+								<rich:column style="text-align:center;" width="14%">
 									<f:facet name="header">
 										<h:panelGrid width="100%" columns="1" style="text-align:center;">
 											<h:outputText value="จำนวน" />
-											<h:outputText value="ทั้งหมด(ชิ้น)" />
+											<h:outputText value="ทั้งหมด" />
 										</h:panelGrid>
 									</f:facet>
 									<h:outputText value="#{item.balance}" />
 									<rich:spacer width="5"/>
-									<a4j:commandButton image="/imgs/expand.png" title="เพิ่มสินค้า"/>
+									<a4j:commandButton image="/imgs/add_sm.png" title="เพิ่มสินค้า"
+										action="#{productFormManage.prepareIncrease(item)}"
+										oncomplete="#{rich:component('product_increase_modal')}.show();"
+										reRender="product_increase_modal_frm"/>
+								</rich:column>
+								<rich:column style="text-align:center;" width="13%">
+									<f:facet name="header">
+										<h:outputText value="แก้ไข/ลบ" />
+									</f:facet>
+									<a4j:commandButton image="/imgs/edit_sm.png"
+										action="#{productFormManage.prepareEditInventory(item)}"
+										reRender="size_detail_modal_frm"
+										oncomplete="#{rich:component('size_detail_modal')}.show();"/>
+									<rich:spacer width="5"/>
+									<a4j:commandButton image="/imgs/delete_sm.png"/>
 								</rich:column>
 							</rich:dataTable>
 							</h:panelGroup>
@@ -164,7 +172,7 @@
 				</td>
 				<td valign="top">
 					<h:panelGroup id="imgView">
-						<h:panelGroup rendered="#{!(productFormManage.attachList != null &amp;&amp; productFormManage.attachList.size() &gt; 0)}">
+						<h:panelGroup rendered="#{productFormManage.tmpAttachList != null &amp;&amp; productFormManage.tmpAttachList.size() &gt; 0}">
 						<ui:repeat value="#{productFormManage.tmpAttachList}" var="item" >
 							<h:panelGrid columns="2">
 								<h:graphicImage value="/imgs/attachment2.png" />
@@ -186,7 +194,7 @@
 			</table>
 		</h:form>
 		
-		<rich:modalPanel id="size_detail_modal" width="600" autosized="true">
+		<rich:modalPanel id="size_detail_modal" width="300" autosized="true">
 	        <f:facet name="header">
 	            <h:panelGroup>
 	                <h:outputText value="ขนาด, สี"></h:outputText>
@@ -199,33 +207,60 @@
 	            </h:panelGroup>
 	        </f:facet>
 	       	<h:form id="size_detail_modal_frm">
-	       		<h:panelGrid columns="12">
-					<rich:comboBox id="sizeCombo" defaultLabel="ขนาด" width="70" value="#{productFormManage.sizeSelected}" 
-						enableManualInput="false">
-						<f:selectItem itemLabel="S" itemValue="S"/>
-						<f:selectItem itemLabel="M" itemValue="M"/>
-						<f:selectItem itemLabel="L" itemValue="L"/>
-						<f:selectItem itemLabel="XL" itemValue="XL"/>
-						<f:selectItem itemLabel="Free size" itemValue="Free size"/>
-						<f:selectItem itemLabel="NONE" itemValue="NONE"/>
-					</rich:comboBox>
-					<rich:spacer width="10"/>
-					<h:outputText value="รายละเอียด : " />
-					<h:inputText value="#{productFormManage.inventory.detail}" />
-					<rich:spacer width="10"/>
-					<h:outputText value="สี : " />
-					<h:inputText value="#{productFormManage.inventory.color}" style="width:50px;"/>
-					<rich:spacer width="10"/>
-					<h:outputText value="จำนวน : " />
-					<h:inputText id="quantity" value="#{productFormManage.inventory.quantity}" 
-						style="width:50px;" onblur="checkInt(this);"/>
-					<rich:spacer width="5"/>
-					<h:outputText value="ชิ้น" />
-				</h:panelGrid>
-				<div style="padding-top:10px;padding-bottom:10px;width: 550px;">
+	       		<table border="0">
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="ขนาด" />
+						</td>
+						<td class="contentForm">
+							<rich:comboBox id="sizeCombo" defaultLabel="ขนาด" width="100" value="#{productFormManage.sizeSelected}" 
+								enableManualInput="false">
+								<f:selectItem itemLabel="S" itemValue="S"/>
+								<f:selectItem itemLabel="M" itemValue="M"/>
+								<f:selectItem itemLabel="L" itemValue="L"/>
+								<f:selectItem itemLabel="XL" itemValue="XL"/>
+								<f:selectItem itemLabel="Free size" itemValue="Free size"/>
+								<f:selectItem itemLabel="NONE" itemValue="NONE"/>
+							</rich:comboBox>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="รายละเอียด" />
+						</td>
+						<td class="contentForm">
+							<h:inputTextarea value="#{productFormManage.inventory.detail}" cols="30" rows="7"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="สี" />
+						</td>
+						<td class="contentForm">
+							<h:inputText value="#{productFormManage.inventory.color}" style="width:100px;"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="จำนวน" />
+						</td>
+						<td class="contentForm">
+							<h:panelGrid cellpadding="0" cellspacing="0" columns="3">
+								<rich:inputNumberSpinner value="#{productFormManage.inventory.quantity}" style="width:30px;"
+									rendered="#{productFormManage.inventory != null}" enableManualInput="true"/>
+								<rich:spacer width="5"/>
+								<h:outputText value="ชิ้น" />
+							</h:panelGrid>
+						</td>
+					</tr>
+				</table>
+				<div style="padding-top:10px;padding-bottom:10px;">
 					<a4j:commandButton value="เพิ่ม" action="#{productFormManage.doAddInventory()}"
 						oncomplete="#{rich:component('size_detail_modal')}.hide();" 
-						reRender="inventoriesList,size_detail_modal"/>
+						reRender="inventoriesList,size_detail_modal" rendered="#{productFormManage.inventory.id == null}"/>
+					<a4j:commandButton value="ตกลง" action="#{productFormManage.doUpdateInventory()}"
+						oncomplete="#{rich:component('size_detail_modal')}.hide();" 
+						reRender="inventoriesList,size_detail_modal" rendered="#{productFormManage.inventory.id != null}"/>
 				</div>
 	       	</h:form>
 	    </rich:modalPanel>
@@ -261,6 +296,30 @@
 				</div>
 				<a4j:jsFunction ajaxSingle="true" name="doRerenderImgList" reRender="imgView,fNameOverList"/>
 				<a4j:jsFunction ajaxSingle="true" name="doMoveFileFromTmp" action="#{productFormManage.doMoveFileFromTmp()}"/>
+	       	</h:form>
+	    </rich:modalPanel>
+	    
+	    <rich:modalPanel id="product_increase_modal" width="200" autosized="true">
+	        <f:facet name="header">
+	            <h:panelGroup>
+	                <h:outputText value="Product increase"></h:outputText>
+	            </h:panelGroup>
+	        </f:facet>
+	        <f:facet name="controls">
+	            <h:panelGroup>
+	                <h:graphicImage value="/imgs/delete_sm.png" id="product_increase_close"/>
+	                <rich:componentControl for="product_increase_modal" attachTo="product_increase_close" operation="hide" event="onclick"/>
+	            </h:panelGroup>
+	        </f:facet>
+	       	<h:form id="product_increase_modal_frm">
+	       		<h:panelGrid columns="3">
+	       			<rich:inputNumberSpinner value="#{productFormManage.inventory.quantity}" rendered="#{productFormManage.inventory != null}"/>
+	       			<rich:spacer width="10"/>
+	       			<a4j:commandButton value="ตกลง"
+	       				action="#{productFormManage.doIncreaseProduct()}"
+	       				oncomplete="#{rich:component('product_increase_modal')}.hide();"
+	       				reRender="inventoriesList"/>
+	       		</h:panelGrid>
 	       	</h:form>
 	    </rich:modalPanel>
 		

@@ -16,27 +16,9 @@
 		</navigation>
 	</page>
     
-	<page view-id="/product/*" login-required="false">
-		<navigation from-action="#{productListManage.directToProductForm()}">
-			<rule if-outcome="success">
-				<redirect view-id="/product/productform.xhtml"/>
-			</rule>
-		</navigation>
-		<navigation from-action="#{productAddManage.directToProductList()}">
-			<rule if-outcome="success">
-				<redirect view-id="/product/productlist.xhtml"/>
-			</rule>
-		</navigation>
-		<navigation from-action="#{productListManage.directToOrderAdd()}">
-			<rule if-outcome="success">
-				<redirect view-id="/order/orderadd.xhtml"/>
-			</rule>
-		</navigation>
-	</page>
+	<page view-id="/product/*" login-required="false"></page>
 		
-	<page view-id="/order/*" login-required="false">
-	    
-	</page>
+	<page view-id="/order/*" login-required="false"></page>
 	
 	<page view-id="/login.xhtml">
         <navigation from-action="#{identity.isLoggedIn}">
