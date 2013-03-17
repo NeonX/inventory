@@ -93,21 +93,40 @@ public class ProductFormManage extends AbstractUploadBackingBean<ProductFormMana
 		sizeSelected = null;
 	}
 	
+	public void prepareEditInventory(Inventory inventory){
+		this.inventory = inventory;
+		sizeSelected = this.inventory.getSize();
+	}
+	
 	public void doAddInventory(){
 		inventory.setSize(sizeSelected);
+		doIncreaseProduct();
 		product.getInventories().add(inventory);
+	}
+	
+	public void doUpdateInventory(){
+		inventory.setSize(sizeSelected);
+		doIncreaseProduct();
+	}
+	
+	public void prepareIncrease(Inventory inventory){
+		this.inventory = inventory;
+		this.inventory.setQuantity(0);
+	}
+	
+	public void doIncreaseProduct(){
+		inventory.setAvailable(inventory.getAvailable() + inventory.getQuantity());
+		inventory.setBalance(inventory.getBalance() + inventory.getQuantity());
 	}
 	
 	public void saveProduct(){
 		saveStatus = false;
-		Integer quantityCount = 0;
-		for(Inventory inven : product.getInventories()){
-			if(inven.getQuantity() != null){
-				inven.setAvailable(inven.getQuantity());
-				inven.setBalance(inven.getQuantity());
-				quantityCount += inven.getQuantity();
-			}
-		}
+//		Integer quantityCount = 0;
+//		for(Inventory inven : product.getInventories()){
+//			inven.setAvailable(inven.getAvailable() + inven.getQuantity());
+//			inven.setBalance(inven.getBalance() + inven.getQuantity());
+//			quantityCount += inven.getQuantity();
+//		}
 		
 		try{
 			if(product.getCreate_date() == null){
@@ -128,9 +147,8 @@ public class ProductFormManage extends AbstractUploadBackingBean<ProductFormMana
 		
 	}
 	
-	
 	public void prepareAttachList() {
-		
+		tmpAttachList.clear();
 		attachList = productService.getProductAttachByProductCode(product.getProductCode());
 		for(ProductAttach item : attachList){
 			item.setFileServletUrl(getServletImgUrl(product.getProductCode(), item.getReferFilename(), item.getAttachType()));
@@ -216,7 +234,7 @@ public class ProductFormManage extends AbstractUploadBackingBean<ProductFormMana
 	public void doMoveFileFromTmp(){
 		try {
 			savefiles(fItems);
-			fItems = null;
+			fItems.clear();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

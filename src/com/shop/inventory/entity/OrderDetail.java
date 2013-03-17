@@ -40,9 +40,18 @@ public class OrderDetail extends AbstractEntity {
 	@Column(name="discount_amount")
 	private Double discountAmount;
 	
-	@Column(name="status")
-	private String status;
+	@Column(name="payable_confirm")
+	private boolean payableConfirm = false;
 
+	@Column(name="quantity")
+	private Integer quantity;
+	
+	@Column(name="size")
+	private String size;
+	
+	@Column(name="color")
+	private String color;
+	
 	public Long getOrderDetailId() {
 		return orderDetailId;
 	}
@@ -83,12 +92,36 @@ public class OrderDetail extends AbstractEntity {
 		this.discountAmount = discountAmount;
 	}
 
-	public String getStatus() {
-		return status;
+	public boolean isPayableConfirm() {
+		return payableConfirm;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setPayableConfirm(boolean payableConfirm) {
+		this.payableConfirm = payableConfirm;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
 	}
 
 }

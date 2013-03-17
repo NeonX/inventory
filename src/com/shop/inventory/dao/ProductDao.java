@@ -35,6 +35,37 @@ public class ProductDao extends AbstractGenericDao<Product, String> {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public Product getProduct(String productCode, String productName){
+		try{
+			if ((productCode != null && productCode.trim().length() > 0)
+					|| (productName != null && productName.trim().length() > 0)) {
+				
+				String hql = "FROM Product WHERE 1=1 ";
+				
+				if(productCode != null && productCode.trim().length() > 0){
+					hql += "AND productCode = :pcode ";
+				}
+				if(productName != null && productName.trim().length() > 0){
+					hql += "AND LOWER(productName) LIKE LOWER('%"+productName+"%') ";
+				}
+				
+				Query q = getEntityManager().createQuery(hql);
+				if(productCode != null && productCode.trim().length() > 0){
+					q.setParameter("pcode", productCode);
+				}
+				
+				List<Product> result = q.getResultList();
+				if(result != null && result.size() > 0){
+					return result.get(0);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Product> getAllProduct(){
 		try{
 			String hql = "FROM Product ORDER BY create_date DESC";

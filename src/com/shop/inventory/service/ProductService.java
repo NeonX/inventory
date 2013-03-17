@@ -19,6 +19,10 @@ public class ProductService {
 		return productDao.getProduct(productCode);
 	}
 	
+	public Product getProduct(String productCode, String productName){
+		return productDao.getProduct(productCode, productName);
+	}
+	
 	public List<Product> getAllProduct(){
 		return productDao.getAllProduct();
 	}

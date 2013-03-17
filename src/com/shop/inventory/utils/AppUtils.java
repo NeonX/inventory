@@ -320,6 +320,24 @@ public class AppUtils {
 		return url;
 	}
 	
+	public static String getServletImgUrl(String productCode, String fileName, String type){
+		
+		String url = null;
+		String context = WebUtils.getHostContextUrl()+"/attach_file/projattach";
+		
+		String param1 = "projid="+productCode;
+		String param2 = "fname="+fileName;
+		String param3 = "ptype="+type;
+		
+		if (!isNullOrEmpty(productCode)
+				&& !AppUtils.isNullOrEmpty(fileName)
+				&& !AppUtils.isNullOrEmpty(type)) {
+			url = context+"?"+param1+"&"+param2+"&"+param3;
+		}
+		
+		return url;
+	}
+	
 	public static Double roundUpDoubleValue(Double doubleVal){
 		try{
 			if(doubleVal != null){

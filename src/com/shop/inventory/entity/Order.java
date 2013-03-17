@@ -19,7 +19,7 @@ public class Order extends AbstractEntity {
 
 	@Id
 	@Column(name="order_code", unique=true, nullable=false)
-	private Long orderCode;
+	private String orderCode;
 	
 	@Column(name="order_date")
 	private Date orderDate;
@@ -43,20 +43,23 @@ public class Order extends AbstractEntity {
 	private String trackingNumber;
 	
 	@Column(name="ems_price")
-	private Integer includeEMS = 30;
+	private Integer emsPrice = 30;
 	
 	@Column(name="status")
 	private String status;
+	
+	@Column(name="note")
+	private String note;
 	
 	@OneToMany(mappedBy="order", targetEntity=OrderDetail.class, cascade={CascadeType.ALL})	
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<OrderDetail> orderDetail;
 
-	public Long getOrderCode() {
+	public String getOrderCode() {
 		return orderCode;
 	}
 
-	public void setOrderCode(Long orderCode) {
+	public void setOrderCode(String orderCode) {
 		this.orderCode = orderCode;
 	}
 
@@ -132,12 +135,20 @@ public class Order extends AbstractEntity {
 		this.orderDetail = orderDetail;
 	}
 
-	public Integer getIncludeEMS() {
-		return includeEMS;
+	public String getNote() {
+		return note;
 	}
 
-	public void setIncludeEMS(Integer includeEMS) {
-		this.includeEMS = includeEMS;
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public Integer getEmsPrice() {
+		return emsPrice;
+	}
+
+	public void setEmsPrice(Integer emsPrice) {
+		this.emsPrice = emsPrice;
 	}
 
 	

@@ -31,9 +31,9 @@ public class Inventory {
 	
 	private String color;
 
-	private Integer available;
+	private Integer available = 0;
 	
-	private Integer balance;
+	private Integer balance = 0;
 	
 	@Transient
 	private Integer quantity = 0;

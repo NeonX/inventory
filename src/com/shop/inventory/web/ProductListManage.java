@@ -8,13 +8,11 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 
-import com.shop.inventory.common.OutcomeState;
 import com.shop.inventory.entity.Inventory;
 import com.shop.inventory.entity.Product;
 import com.shop.inventory.entity.ProductAttach;
 import com.shop.inventory.service.ProductService;
 import com.shop.inventory.utils.AppUtils;
-import com.shop.inventory.web.utils.WebUtils;
 
 @Name("productListManage")
 @Scope(ScopeType.PAGE)
@@ -24,6 +22,10 @@ public class ProductListManage extends AbstractBackingBean<ProductListManage> {
 	private List<Product> productList;
 	private List<Inventory> inventories;
 	private Integer sumInventory = 0;
+	
+	private String productCodeSearch;
+	private String productNameSearch;
+	private Boolean searchResultEmpty;
 	
 	@Out(required=false, scope=ScopeType.SESSION)
 	String productCodeParam;
@@ -36,36 +38,26 @@ public class ProductListManage extends AbstractBackingBean<ProductListManage> {
 
 	@Create
 	public void init(){
+		productCodeSearch = null;
+		productNameSearch = null;
+		searchResultEmpty = null;
 		productList = productService.getAllProduct();
+		prepareAttachment();
+	}
+	
+	private void prepareAttachment(){
 		for(Product pd : productList){
 			if(pd.getImgAttach() != null && pd.getImgAttach().size() > 0){
 				ProductAttach ath = pd.getImgAttach().get(0);
-				pd.setFileServletUrl(getServletImgUrl(pd.getProductCode(), ath.getReferFilename(), ath.getAttachType()));
+				pd.setFileServletUrl(AppUtils.getServletImgUrl(pd.getProductCode(), ath.getReferFilename(), ath.getAttachType()));
 			}
 		}
-	}
-	
-	private String getServletImgUrl(String productCode, String fileName, String type){
-		
-		String url = null;
-		String context = WebUtils.getHostContextUrl()+"/attach_file/projattach";
-		
-		String param1 = "projid="+productCode;
-		String param2 = "fname="+fileName;
-		String param3 = "ptype="+type;
-		
-		if (!AppUtils.isNullOrEmpty(productCode)
-				&& !AppUtils.isNullOrEmpty(fileName)
-				&& !AppUtils.isNullOrEmpty(type)) {
-			url = context+"?"+param1+"&"+param2+"&"+param3;
-		}
-		
-		return url;
 	}
 	
 	public void getProductInventory(String code){
 		if(code != null && code.trim().length() > 0){
 			inventories = productService.getInventoryList(code);
+			sumInventory = 0;
 			if(inventories != null && inventories.size() > 0){
 				for(Inventory item : inventories){
 					sumInventory += item.getAvailable(); 
@@ -74,8 +66,23 @@ public class ProductListManage extends AbstractBackingBean<ProductListManage> {
 		}
 	}
 	
-	public String directToProductForm(){
-		return OutcomeState.SUCCESS;
+	public void doSearchProduct(){
+		if ((productCodeSearch != null && productCodeSearch.trim().length() > 0)
+				|| (productNameSearch != null && productNameSearch.trim().length() > 0)) {
+			
+			productList.clear();
+			Product searchResult = productService.getProduct(productCodeSearch, productNameSearch);
+			if(searchResult == null){
+				searchResultEmpty = true;
+			}else{
+				productList.add(searchResult);
+				prepareAttachment();
+			}
+		}
+	}
+	
+	public void directToProductForm(){
+		forceRedirectPage("/product/productform.xhtml");
 	}
 	
 	public void directToProductForm(String productCode){
@@ -83,8 +90,8 @@ public class ProductListManage extends AbstractBackingBean<ProductListManage> {
 		forceRedirectPage("/product/productform.xhtml");
 	}
 	
-	public String directToOrderAdd(){
-		return OutcomeState.SUCCESS;
+	public void directToOrderForm(){
+		forceRedirectPage("/order/orderform.xhtml");
 	}
 
 	
@@ -111,6 +118,30 @@ public class ProductListManage extends AbstractBackingBean<ProductListManage> {
 
 	public void setSumInventory(Integer sumInventory) {
 		this.sumInventory = sumInventory;
+	}
+
+	public String getProductCodeSearch() {
+		return productCodeSearch;
+	}
+
+	public void setProductCodeSearch(String productCodeSearch) {
+		this.productCodeSearch = productCodeSearch;
+	}
+
+	public Boolean getSearchResultEmpty() {
+		return searchResultEmpty;
+	}
+
+	public void setSearchResultEmpty(Boolean searchResultEmpty) {
+		this.searchResultEmpty = searchResultEmpty;
+	}
+
+	public String getProductNameSearch() {
+		return productNameSearch;
+	}
+
+	public void setProductNameSearch(String productNameSearch) {
+		this.productNameSearch = productNameSearch;
 	}
 	
 	
