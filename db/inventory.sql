@@ -93,7 +93,7 @@ ALTER TABLE public.inventory_seq OWNER TO postgres;
 -- Name: inventory_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('inventory_seq', 17, true);
+SELECT pg_catalog.setval('inventory_seq', 33, true);
 
 
 --
@@ -101,7 +101,6 @@ SELECT pg_catalog.setval('inventory_seq', 17, true);
 --
 
 CREATE TABLE "order" (
-    order_code bigint NOT NULL,
     create_by character varying(50),
     create_date timestamp without time zone,
     update_by character varying(50),
@@ -114,7 +113,9 @@ CREATE TABLE "order" (
     ship_address character varying(255),
     ship_name character varying(255),
     status character varying(255),
-    tracking_number character varying(255)
+    tracking_number character varying(255),
+    note text,
+    order_code character varying(15) NOT NULL
 );
 
 
@@ -132,9 +133,11 @@ CREATE TABLE order_detail (
     update_date timestamp without time zone,
     discount_amount double precision,
     sell_price double precision,
-    status character varying(255),
-    order_code bigint,
-    product_code character varying(255)
+    product_code character varying(255),
+    quantity integer,
+    size character varying,
+    color character varying,
+    order_code character varying(15) NOT NULL
 );
 
 
@@ -198,7 +201,7 @@ CREATE TABLE product_attach (
     description character varying(255),
     file_size_bytes double precision,
     order_no integer,
-    origin_filename character varying(100),
+    origin_filename text,
     refer_filename character varying(100),
     product_code character varying(255)
 );
@@ -224,7 +227,7 @@ ALTER TABLE public.product_attach_seq OWNER TO postgres;
 -- Name: product_attach_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('product_attach_seq', 14, true);
+SELECT pg_catalog.setval('product_attach_seq', 33, true);
 
 
 --
@@ -258,6 +261,61 @@ ALTER TABLE public.province_seq OWNER TO postgres;
 --
 
 SELECT pg_catalog.setval('province_seq', 1, false);
+
+
+--
+-- Name: shop; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE shop (
+    shop_id integer NOT NULL,
+    shop_code character varying(10),
+    shop_name character varying(255),
+    create_by character varying(50),
+    create_date timestamp without time zone,
+    update_by character varying(50),
+    update_date timestamp without time zone
+);
+
+
+ALTER TABLE public.shop OWNER TO postgres;
+
+--
+-- Name: shop_member; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE shop_member (
+    username character varying(10) NOT NULL,
+    password character varying(255),
+    shop_id integer NOT NULL,
+    create_by character varying(50),
+    create_date timestamp without time zone,
+    update_by character varying(50),
+    update_date timestamp without time zone
+);
+
+
+ALTER TABLE public.shop_member OWNER TO postgres;
+
+--
+-- Name: shop_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE shop_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.shop_seq OWNER TO postgres;
+
+--
+-- Name: shop_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('shop_seq', 1, false);
 
 
 --
@@ -307,14 +365,9 @@ COPY amphur (amphur_id, amphur_name, province_id) FROM stdin;
 --
 
 COPY inventory (inventory_id, product_code, detail, color, size, available, balance) FROM stdin;
-2	P3181462	อก 38" วงแขน19" แขนยาว26" สะโพก free ยาว22"	white	Free size	10	10
-3	P3181462	อก 38" วงแขน19" แขนยาว26" สะโพก free ยาว22"	cream	Free size	10	10
-4	P7613591	อก 34-36 นิ้ว เอว 28 นิ้ว ยาว 32 นิ้ว	pink	Free size	15	15
-5	P4586279	อก 33, เอว 25, ยาว31	ส้ม	S	7	7
-6	P4586279	อก 35, เอว 27, ยาว 31	เขียว	M	3	3
-10	P3752077		black & white	Free size	12	12
-16	P4901432	QQQQQQQ	blue	M	8	8
-17	P9096840	เสื้อ อก: 36 นิ้ว, กางเกงกระโปรงอัดพรีต เอว: ได้ถึง 32 ยาว : 14 นิ้ว	กรม		30	30
+31	P2453408	อก 34" เอว 27" สะโพก free - 40" ยาว 32" ความยาวแขน 19"	ดำ	S	10	10
+32	P2453408	อก 36" เอว 30" สะโพก - 40" ยาว 32" ความยาวแขน 19"	ดำ	M	10	10
+33	P7110207	- เสื้อ\nอก: 36 นิ้ว\nยาว: 25 นิ้ว\n- กางเกงกระโปรงอัดพรีต\nเอว: ได้ถึง 32\nยาว : 14 นิ้ว	กรม	Free size	30	30
 \.
 
 
@@ -322,7 +375,7 @@ COPY inventory (inventory_id, product_code, detail, color, size, available, bala
 -- Data for Name: order; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY "order" (order_code, create_by, create_date, update_by, update_date, customer_name, ems_price, order_date, sender_address, sender_name, ship_address, ship_name, status, tracking_number) FROM stdin;
+COPY "order" (create_by, create_date, update_by, update_date, customer_name, ems_price, order_date, sender_address, sender_name, ship_address, ship_name, status, tracking_number, note, order_code) FROM stdin;
 \.
 
 
@@ -330,7 +383,7 @@ COPY "order" (order_code, create_by, create_date, update_by, update_date, custom
 -- Data for Name: order_detail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY order_detail (order_detail_id, create_by, create_date, update_by, update_date, discount_amount, sell_price, status, order_code, product_code) FROM stdin;
+COPY order_detail (order_detail_id, create_by, create_date, update_by, update_date, discount_amount, sell_price, product_code, quantity, size, color, order_code) FROM stdin;
 \.
 
 
@@ -339,13 +392,8 @@ COPY order_detail (order_detail_id, create_by, create_date, update_by, update_da
 --
 
 COPY product (product_code, create_by, create_date, update_by, update_date, cost_price, detail, last_sale_date, product_name, sell_price, status) FROM stdin;
-P3181462	\N	\N	\N	\N	300	เสื้อตาข่ายปักลายใบไม้ Vintage แขนยาว see-through ทั้งตัว ลุคชิลๆ หรือจะแอบ sexy เบาๆ\n**งานตัวนี้มีหลายเกรดนะคะ งานตัวนี้ของเราเป็นงานเกรดดีนะคะ จะต่างกันที่ผ้าตะข่ายและงานปักค่ะ\n	\N	Vintage leaf See-through Blouse	490	\N
-P7613591	\N	\N	\N	2013-03-10 11:55:56.889	400	เดรสลูกไม้ปักเลื่อมสุดหรู ซับในทั้งตัว สีหวานมากค่ะ\nใส่ไปงานได้สบายๆ ในราคาเบาๆ สวยหรู	\N	Sweet Sequin lace dress	690	\N
-P4586279	\N	\N	\N	2013-03-10 19:28:12.46	1000	เพลย์สูทกางเกงขาสั้นพิมพ์ลายค่ะ\nเป็นเนื้อผ้า Polyester 100% สั่งทอพิเศษอย่างดีเพื่อเนื้อผ้าที่เหมือนแบบในช็อปเลยค่ะ	\N	Kloset Blossom Bang Playsuits In Pollen Space A/W 2012	1490	\N
-P3752077	\N	2013-03-10 21:10:39.87	\N	\N	500	maxi test	\N	maxi test	690	\N
-P3535440	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-P4901432	\N	2013-03-10 21:43:27.996	\N	\N	400	QQQQQQ	\N	QQQQQ	600	\N
-P9096840	\N	2013-03-10 22:00:30.701	\N	\N	500	set เสื้อกางเกงกระโปรงอัดพรีต ลุคชิลๆ แบบไม่หวานมมาก	\N	Two-Piece Partysu Set	690	\N
+P2453408	\N	2013-03-16 16:41:34.442	\N	2013-03-16 16:53:29.695	500	ปลายแขนจั้มสามารถดึงขึ้นมาเหมือนภาพ หรือจะเอาลงก็สวยดูดีค่ะ มีซิป ด้านหลัง	\N	เดรสดำ เว้าแขน	750	\N
+P7110207	\N	2013-03-16 16:57:16.539	\N	\N	550	set เสื้อกางเกงกระโปรงอัดพรีต ลุคชิลๆ แบบไม่หวานมมาก	\N	Two-Piece Partysu Set	790	\N
 \.
 
 
@@ -354,20 +402,13 @@ P9096840	\N	2013-03-10 22:00:30.701	\N	\N	500	set เสื้อกางเก
 --
 
 COPY product_attach (attach_id, create_by, create_date, update_by, update_date, attach_date, attach_type, content_type, description, file_size_bytes, order_no, origin_filename, refer_filename, product_code) FROM stdin;
-1	\N	2013-03-10 21:10:05.811	\N	2013-03-10 21:10:05.811	\N	IMGS	image/jpeg	397462_357719177669660_639597949_n	136435	\N	397462_357719177669660_639597949_n.jpg	IMG20130310_211005-9725.jpg	P3752077
-2	\N	2013-03-10 21:10:05.962	\N	2013-03-10 21:10:05.962	\N	IMGS	image/jpeg	IMG_1378	239791	\N	IMG_1378.jpg	IMG20130310_211005-208.jpg	P3752077
-3	\N	2013-03-10 21:10:06.202	\N	2013-03-10 21:10:06.202	\N	IMGS	image/jpeg	maxi	505032	\N	maxi.jpg	IMG20130310_211006-2159.jpg	P3752077
-4	\N	2013-03-10 21:17:59.413	\N	2013-03-10 21:17:59.413	\N	IMGS	image/jpeg	(187)	180375	\N	(187).jpg	IMG20130310_211759-6220.jpg	P3535440
-5	\N	2013-03-10 21:17:59.524	\N	2013-03-10 21:17:59.524	\N	IMGS	image/jpeg	(356)	107779	\N	(356).jpg	IMG20130310_211759-7406.jpg	P3535440
-6	\N	2013-03-10 21:17:59.604	\N	2013-03-10 21:17:59.604	\N	IMGS	image/jpeg	3	42018	\N	3.jpg	IMG20130310_211759-830.jpg	P3535440
-7	\N	2013-03-10 21:17:59.704	\N	2013-03-10 21:17:59.704	\N	IMGS	image/jpeg	3ec07535c4e054c1	75218	\N	3ec07535c4e054c1.jpg	IMG20130310_211759-3845.jpg	P3535440
-8	\N	2013-03-10 21:17:59.844	\N	2013-03-10 21:17:59.844	\N	IMGS	image/jpeg	3er	69740	\N	3er.jpg	IMG20130310_211759-7910.jpg	P3535440
-9	\N	2013-03-10 21:43:00.429	\N	2013-03-10 21:43:00.429	\N	IMGS	image/jpeg	16	107451	\N	16.jpg	IMG20130310_214300-5349.jpg	P4901432
-10	\N	2013-03-10 21:43:00.569	\N	2013-03-10 21:43:00.569	\N	IMGS	image/jpeg	83	83405	\N	83.jpg	IMG20130310_214300-8826.jpg	P4901432
-11	\N	2013-03-10 21:43:00.669	\N	2013-03-10 21:43:00.669	\N	IMGS	image/jpeg	87c9495fb336b9f0	142918	\N	87c9495fb336b9f0.jpg	IMG20130310_214300-7859.jpg	P4901432
-12	\N	2013-03-10 21:43:00.759	\N	2013-03-10 21:43:00.759	\N	IMGS	image/jpeg	533 _2_2	84871	\N	533 _2_2.jpg	IMG20130310_214300-6635.jpg	P4901432
-13	\N	2013-03-10 22:00:21.339	\N	2013-03-10 22:00:21.339	\N	IMGS	image/jpeg	542135_345634108878167_1162599210_n	69022	\N	542135_345634108878167_1162599210_n.jpg	IMG20130310_220021-9309.jpg	P9096840
-14	\N	2013-03-10 22:00:21.419	\N	2013-03-10 22:00:21.419	\N	IMGS	image/jpeg	Two-Piece Partysu Set	100024	\N	Two-Piece Partysu Set.jpg	IMG20130310_220021-2480.jpg	P9096840
+27	\N	2013-03-16 16:53:23.221	\N	2013-03-16 16:53:23.221	\N	IMGS	image/jpeg	black dress 1	30648	\N	black dress 1.jpg	IMG20130316_165323-1710.jpg	P2453408
+28	\N	2013-03-16 16:53:23.299	\N	2013-03-16 16:53:23.299	\N	IMGS	image/jpeg	black dress 2	21655	\N	black dress 2.jpg	IMG20130316_165323-7085.jpg	P2453408
+29	\N	2013-03-16 16:53:23.362	\N	2013-03-16 16:53:23.362	\N	IMGS	image/jpeg	black dress 3	34808	\N	black dress 3.jpg	IMG20130316_165323-2008.jpg	P2453408
+30	\N	2013-03-16 16:53:23.455	\N	2013-03-16 16:53:23.455	\N	IMGS	image/jpeg	black dress 4	37312	\N	black dress 4.jpg	IMG20130316_165323-1820.jpg	P2453408
+31	\N	2013-03-16 16:53:23.549	\N	2013-03-16 16:53:23.549	\N	IMGS	image/jpeg	black dress 5	30958	\N	black dress 5.jpg	IMG20130316_165323-6975.jpg	P2453408
+32	\N	2013-03-16 16:57:11.563	\N	2013-03-16 16:57:11.563	\N	IMGS	image/jpeg	542135_345634108878167_1162599210_n	69022	\N	542135_345634108878167_1162599210_n.jpg	IMG20130316_165711-3360.jpg	P7110207
+33	\N	2013-03-16 16:57:11.703	\N	2013-03-16 16:57:11.703	\N	IMGS	image/jpeg	Two-Piece Partysu Set	100024	\N	Two-Piece Partysu Set.jpg	IMG20130316_165711-1393.jpg	P7110207
 \.
 
 
@@ -376,6 +417,22 @@ COPY product_attach (attach_id, create_by, create_date, update_by, update_date, 
 --
 
 COPY province (province_id, province_name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: shop; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY shop (shop_id, shop_code, shop_name, create_by, create_date, update_by, update_date) FROM stdin;
+\.
+
+
+--
+-- Data for Name: shop_member; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY shop_member (username, password, shop_id, create_by, create_date, update_by, update_date) FROM stdin;
 \.
 
 
@@ -412,14 +469,6 @@ ALTER TABLE ONLY order_detail
 
 
 --
--- Name: order_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY "order"
-    ADD CONSTRAINT order_pkey PRIMARY KEY (order_code);
-
-
---
 -- Name: product_attach_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -444,6 +493,22 @@ ALTER TABLE ONLY province
 
 
 --
+-- Name: shop_member_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY shop_member
+    ADD CONSTRAINT shop_member_pkey PRIMARY KEY (username);
+
+
+--
+-- Name: shop_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY shop
+    ADD CONSTRAINT shop_pkey PRIMARY KEY (shop_id);
+
+
+--
 -- Name: tambon_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -457,14 +522,6 @@ ALTER TABLE ONLY tambon
 
 ALTER TABLE ONLY order_detail
     ADD CONSTRAINT fk23ae5a628a8f541e FOREIGN KEY (product_code) REFERENCES product(product_code);
-
-
---
--- Name: fk23ae5a62adbf4bfe; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY order_detail
-    ADD CONSTRAINT fk23ae5a62adbf4bfe FOREIGN KEY (order_code) REFERENCES "order"(order_code);
 
 
 --
@@ -497,6 +554,14 @@ ALTER TABLE ONLY tambon
 
 ALTER TABLE ONLY product_attach
     ADD CONSTRAINT fke25c83958a8f541e FOREIGN KEY (product_code) REFERENCES product(product_code);
+
+
+--
+-- Name: shop_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY shop_member
+    ADD CONSTRAINT shop_fkey FOREIGN KEY (shop_id) REFERENCES shop(shop_id);
 
 
 --
