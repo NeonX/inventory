@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/common/template.xhtml">
+
+	<ui:define name="content">
+	
+		<h:form id="orderFrm">
+	
+			<fieldset class="fieldset_layout" style="width:800px;">
+    			<legend class="fieldset_label">ข้อมูลสั่งซื้อ</legend>
+    			<table border="0" width="100%">
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="รหัสสั่งซื้อ" />
+						</td>
+						<td class="contentForm" width="150px">
+							<h:outputText value="#{orderFormManage.order.orderCode}" style="font-size:13px;font-weight:bold;color:blue;"/>
+						</td>
+						<td class="labelRight">
+							<h:outputText value="วันที่สั่งซื้อ" />
+						</td>
+						<td class="contentForm">
+							<h:inputText value="#{orderFormManage.orderDateStr}" style="width:200px;"  required="true"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="ร้าน" />
+						</td>
+						<td class="contentForm">
+							<rich:comboBox></rich:comboBox>
+						</td>
+						<td class="labelRight">
+							<h:outputText value="ชื่อผู้สั่งซื้อ" />
+						</td>
+						<td class="contentForm">
+							<h:inputText value="#{orderFormManage.order.customerName}" style="width:200px;"  required="true"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:panelGrid columns="1" cellpadding="0" cellspacing="0" style="text-align:right;" width="100%">
+								<h:outputText value="ชื่อผู้รับ" />
+								<h:outputText value="(ลูกค้า)" />
+							</h:panelGrid>
+						</td>
+						<td class="contentForm" width="150px" valign="top">
+							<h:inputText value="#{orderFormManage.order.shipName}" style="width:150px;"  required="true"/>
+						</td>
+						<td class="labelRight">
+							<h:outputText value="ที่อยู่ผู้รับ" />
+						</td>
+						<td class="contentForm">
+							<h:inputTextarea value="#{orderFormManage.order.shipAddress}" cols="25"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="ชื่อผู้ส่ง" />
+						</td>
+						<td class="contentForm" width="150px" valign="top">
+							<h:inputText value="#{orderFormManage.order.senderName}" style="width:150px;"  required="true"/>
+						</td>
+						<td class="labelRight">
+							<h:outputText value="ที่อยู่ผู้ส่ง" />
+						</td>
+						<td class="contentForm">
+							<h:inputTextarea value="#{orderFormManage.order.senderAddress}" cols="25"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="สถานะ" />
+							<rich:spacer width="5"/>
+							<a4j:commandButton image="/imgs/help_blue.png">
+								<rich:toolTip style="color:gray;background-color:white;text-align:left;">
+						            <span style="white-space:nowrap;font-weight:normal;">
+						                <strong>จองสินค้า : </strong>สั่งจองล่วงหน้ายังไม่มีสินค้าขายจริง<br/>
+						                <strong>รอชำระ : </strong>สินค้ามีพร้อมส่ง รอการโอนเงินจากลูกค้า<br/>
+						                <strong>พร้อมจัดส่ง : </strong>ลูกค้าโอนเงินครบจำนวน พร้อมแจ้งที่อยู่จัดส่ง<br/>
+						                <strong>จัดส่งเรียบร้อย : </strong>สินค้าถูกจัดส่ง พร้อมมีเลข Track number(กรณี EMS)<br/>
+						            </span>
+						        </rich:toolTip>
+							</a4j:commandButton>
+						</td>
+						<td class="contentForm">
+							<a4j:region>
+							<rich:comboBox enableManualInput="false" value="#{orderFormManage.orderStatusSelected}">
+								<s:selectItems value="#{orderFormManage.orderStatus}" var="status" itemValue="#{status}"/>
+								<a4j:support event="onselect" action="#{orderFormManage.verifyStatus()}"/>
+							</rich:comboBox>
+							</a4j:region>
+						</td>
+						<td class="labelRight">
+							<h:outputText value="ค่าจัดส่ง" />
+						</td>
+						<td class="contentForm" width="1จ0px" valign="top">
+							<h:inputText value="#{orderFormManage.order.emsPrice}" style="width:150px;"/>
+							<h:outputText value=" บาท" />
+						</td>
+					</tr>
+					<tr>
+						<td class="labelRight">
+							<h:outputText value="หมายเหตุ" />
+						</td>
+						<td class="contentForm" colspan="3">
+							<h:inputTextarea value="#{orderFormManage.order.note}" cols="30"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="contentForm" colspan="4">
+							<fieldset class="fieldset_layout" style="width:800px;">
+    							<legend class="fieldset_label">รายการสินค้า</legend>
+    							<a4j:region>
+									<a4j:commandButton image="/imgs/add_to_cart2.png"
+										action="#{orderFormManage.prepareFindProduct()}"
+										reRender="find_product_modal_frm"
+										oncomplete="#{rich:component('find_product_modal')}.show();"/>
+								</a4j:region>
+								<h:panelGroup rendered="#{orderFormManage.order.orderDetail == null || orderFormManage.order.orderDetail.size() == 0}">
+									<div style="padding-top:20px; ">
+										<h:outputText value="--- ไม่มีรายการสินค้า ---" styleClass="msg_fail"/>
+									</div>
+								</h:panelGroup>
+								<rich:dataTable value="#{orderFormManage.order.orderDetail}" var="detail"
+									width="100%" columnsWidth="11%,13%,27%,10%,8%,8%,8%,8%,6%"
+									rendered="#{orderFormManage.order.orderDetail != null &amp;&amp; orderFormManage.order.orderDetail.size() &gt; 0}">
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="รหัส" />
+										</f:facet>
+										<h:outputText value="N/A" />
+									</rich:column>
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="รูป" />
+										</f:facet>
+										<h:outputText value="N/A" />
+									</rich:column>
+									<rich:column>
+										<f:facet name="header">
+											<h:outputText value="ชื่อสินค้า" />
+										</f:facet>
+										<h:outputText value="N/A" />
+									</rich:column>
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="ขนาด" />
+										</f:facet>
+										<h:outputText value="N/A" />
+									</rich:column>
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="สี" />
+										</f:facet>
+										<h:outputText value="N/A" />
+									</rich:column>
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="จำนวน" />
+										</f:facet>
+										<h:outputText value="N/A" />
+									</rich:column>
+									<rich:column style="text-align:right;">
+										<f:facet name="header">
+											<h:outputText value="ราคาขาย" />
+										</f:facet>
+										<h:outputText value="N/A" />
+									</rich:column>
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="ยืนยันโอน" />
+										</f:facet>
+										<h:outputText value="N/A" />
+									</rich:column>
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="ยกเลิก" />
+										</f:facet>
+										<h:graphicImage value="/imgs/delete_sm.png" />
+									</rich:column>
+								</rich:dataTable>
+								<h:panelGrid columns="2" style="font-weight:bold;" 
+									rendered="#{orderFormManage.order.orderDetail != null &amp;&amp; orderFormManage.order.orderDetail.size() &gt; 0}">
+									<h:panelGrid columns="1" width="100%" cellpadding="0" cellspacing="0" style="text-align:right;">
+										<h:outputText value="รวมราคาสินค้า :" />
+									</h:panelGrid>
+									<h:outputText value="1000 บาท" />
+									<h:outputText value="รวมราคาสินค้า  + จัดส่ง :" />
+									<h:outputText value="1030 บาท" />
+								</h:panelGrid>
+							</fieldset>
+						</td>
+					</tr>
+					<tr>
+						<td class="contentForm" colspan="4">
+							<div style="width:100%;text-align:center;padding-top:15px;padding-bottom:15px;">
+								<a4j:commandButton value="บันทึก" style="width:70px;"/>
+								<rich:spacer width="50"/>
+								<a4j:commandButton value="ยกเลิก" style="width:70px;"/>
+							</div>
+						</td>
+					</tr>
+				</table>
+    		</fieldset>
+			
+		</h:form>
+		
+		
+		<rich:modalPanel id="find_product_modal" width="700" autosized="true">
+	        <f:facet name="header">
+	            <h:panelGroup>
+	                <h:outputText value="ค้นหาสินค้า"></h:outputText>
+	            </h:panelGroup>
+	        </f:facet>
+	        <f:facet name="controls">
+	            <h:panelGroup>
+	                <h:graphicImage value="/imgs/delete_sm.png" id="find_product_modal_close"/>
+	                <rich:componentControl for="find_product_modal" attachTo="find_product_modal_close" operation="hide" event="onclick"/>
+	            </h:panelGroup>
+	        </f:facet>
+	       	<h:form id="find_product_modal_frm">
+	       		<table cellpadding="0" cellspacing="0">
+	       			<tr>
+	       				<td style="vertical-align:top;">
+	       					<h:panelGrid id="searchPanel" columns="11">
+								<h:outputText value="รหัส:" style="font-size:13px;font-weight:bold;"/>
+								<h:inputText value="#{orderFormManage.productCodeSearch}" style="width:70px;"/>
+								<rich:spacer width="7"/>
+								<h:outputText value="ชื่อ :" style="font-size:13px;font-weight:bold;"/>
+								<h:inputText value="#{orderFormManage.productNameSearch}" style="width:100px;"/>
+								<rich:spacer width="7"/>
+								<a4j:commandButton image="/imgs/search_button_green.png" title="search" 
+									action="#{orderFormManage.doSearchProduct()}" reRender="prdGrid,searchPanel,searchMsg,expandDetail"/>
+								<rich:spacer width="3"/>
+								<a4j:commandButton image="/imgs/view_text.png" title="view all" reRender="prdGrid,searchPanel,searchMsg,expandDetail"
+									action="#{orderFormManage.prepareFindProduct()}"/>
+							</h:panelGrid>
+				       		<div style="width:325px;height:450px;overflow:scroll;">
+				       			<h:panelGroup id="searchMsg">
+				       			<h:outputText value="ไม่พบสินค้าที่ค้นหา" styleClass="msg_fail" 
+									rendered="#{orderFormManage.searchResultEmpty != null &amp;&amp; orderFormManage.searchResultEmpty}"/>
+								</h:panelGroup>
+				       			<rich:dataGrid id="prdGrid" columns="1" value="#{orderFormManage.productList}" var="product" width="300"
+				       				onRowMouseOver="this.style.backgroundColor='#FFFFDD'"
+			                    	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'">
+			                    	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			                    		<tr>
+			                    			<td align="center" width="70" bgcolor="#EEEEEE">
+			                    				<h:graphicImage url="#{product.fileServletUrl}" height="40"/>
+			                    			</td>
+			                    			<td style="padding-left:5px;"><h:outputText value="#{product.productName}" /></td>
+			                    			<td align="right" style="padding-left:5px;">
+			                    				<a4j:commandButton image="/imgs/expand.png" action="#{orderFormManage.getProductInventory(product.productCode)}"
+			                    					reRender="expandDetail"/>
+			                    			</td>
+			                    		</tr>
+			                    	</table>
+				       			</rich:dataGrid>
+				       		</div>
+	       				</td>
+	       				<td style="vertical-align:top;padding-left:15px;">
+	       					<h:panelGroup id="expandDetail">
+					       		<rich:dataTable value="#{orderFormManage.inventories}" var="item"
+									width="300" columnsWidth="25%,25%,25%,25%"
+									rendered="#{orderFormManage.inventories != null &amp;&amp; orderFormManage.inventories.size() &gt; 0}">
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="ขนาด" />
+										</f:facet>
+										<h:outputText value="#{item.size}" />
+									</rich:column>
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="สี" />
+										</f:facet>
+										<h:outputText value="#{item.color}" />
+									</rich:column>
+									<rich:column style="text-align:center;#{(item.available &lt;= 0)?'background-color:#FF3300;':'background-color:#DDFFFF;'}">
+										<f:facet name="header">
+											<h:outputText value="คงเหลือ (ชิ้น)" />
+										</f:facet>
+										<h:outputText value="#{item.available}" />
+									</rich:column>
+									<rich:column style="text-align:center;">
+										<f:facet name="header">
+											<h:outputText value="จอง/ขาย" />
+										</f:facet>
+										<a4j:commandButton image="/imgs/add_to_cart.png"/>
+									</rich:column>
+								</rich:dataTable>
+				       		</h:panelGroup>
+	       				</td>
+	       			</tr>
+	       		</table>
+	       	
+	       	</h:form>
+	    </rich:modalPanel>
+		
+	</ui:define>
+
+</ui:composition>
