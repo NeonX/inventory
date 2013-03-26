@@ -137,7 +137,9 @@ CREATE TABLE order_detail (
     quantity integer,
     size character varying,
     color character varying,
-    order_code character varying(15) NOT NULL
+    order_code character varying(15) NOT NULL,
+    payable_confirm boolean DEFAULT false,
+    reserve_complete boolean DEFAULT false
 );
 
 
@@ -161,7 +163,7 @@ ALTER TABLE public.order_detail_seq OWNER TO postgres;
 -- Name: order_detail_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('order_detail_seq', 1, false);
+SELECT pg_catalog.setval('order_detail_seq', 12, true);
 
 
 --
@@ -365,9 +367,9 @@ COPY amphur (amphur_id, amphur_name, province_id) FROM stdin;
 --
 
 COPY inventory (inventory_id, product_code, detail, color, size, available, balance) FROM stdin;
-31	P2453408	อก 34" เอว 27" สะโพก free - 40" ยาว 32" ความยาวแขน 19"	ดำ	S	10	10
-32	P2453408	อก 36" เอว 30" สะโพก - 40" ยาว 32" ความยาวแขน 19"	ดำ	M	10	10
-33	P7110207	- เสื้อ\nอก: 36 นิ้ว\nยาว: 25 นิ้ว\n- กางเกงกระโปรงอัดพรีต\nเอว: ได้ถึง 32\nยาว : 14 นิ้ว	กรม	Free size	30	30
+33	P7110207	- เสื้อ\nอก: 36 นิ้ว\nยาว: 25 นิ้ว\n- กางเกงกระโปรงอัดพรีต\nเอว: ได้ถึง 32\nยาว : 14 นิ้ว	กรม	Free size	29	30
+32	P2453408	อก 36" เอว 30" สะโพก - 40" ยาว 32" ความยาวแขน 19"	ดำ	M	9	10
+31	P2453408	อก 34" เอว 27" สะโพก free - 40" ยาว 32" ความยาวแขน 19"	ดำ	S	9	10
 \.
 
 
@@ -376,6 +378,9 @@ COPY inventory (inventory_id, product_code, detail, color, size, available, bala
 --
 
 COPY "order" (create_by, create_date, update_by, update_date, customer_name, ems_price, order_date, sender_address, sender_name, ship_address, ship_name, status, tracking_number, note, order_code) FROM stdin;
+\N	2013-03-23 18:20:56.777	\N	\N	Nunthanat Klanchuen	30	2013-03-23 00:00:00					รอชำระ	\N		ORD-230313-2489
+\N	2013-03-23 18:25:51.086	\N	\N	ooooo	30	2013-03-23 00:00:00					รอชำระ	\N		ORD-230313-1757
+\N	2013-03-23 18:38:09.513	\N	\N	nuttapong	30	2013-03-23 00:00:00					รอชำระ	\N		ORD-230313-1433
 \.
 
 
@@ -383,7 +388,14 @@ COPY "order" (create_by, create_date, update_by, update_date, customer_name, ems
 -- Data for Name: order_detail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY order_detail (order_detail_id, create_by, create_date, update_by, update_date, discount_amount, sell_price, product_code, quantity, size, color, order_code) FROM stdin;
+COPY order_detail (order_detail_id, create_by, create_date, update_by, update_date, discount_amount, sell_price, product_code, quantity, size, color, order_code, payable_confirm, reserve_complete) FROM stdin;
+6	\N	\N	\N	\N	0	790	P7110207	1	Free size	กรม	ORD-230313-2489	f	t
+7	\N	\N	\N	\N	0	750	P2453408	1	S	ดำ	ORD-230313-2489	f	t
+8	\N	\N	\N	\N	0	790	P7110207	2	Free size	กรม	ORD-230313-1757	f	t
+9	\N	\N	\N	\N	0	750	P2453408	1	S	ดำ	ORD-230313-1757	f	t
+10	\N	\N	\N	\N	0	790	P7110207	1	Free size	กรม	ORD-230313-1433	f	t
+11	\N	\N	\N	\N	0	750	P2453408	1	M	ดำ	ORD-230313-1433	f	t
+12	\N	\N	\N	\N	0	750	P2453408	1	S	ดำ	ORD-230313-1433	f	t
 \.
 
 
@@ -466,6 +478,14 @@ ALTER TABLE ONLY inventory
 
 ALTER TABLE ONLY order_detail
     ADD CONSTRAINT order_detail_pkey PRIMARY KEY (order_detail_id);
+
+
+--
+-- Name: order_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "order"
+    ADD CONSTRAINT order_pkey PRIMARY KEY (order_code);
 
 
 --
