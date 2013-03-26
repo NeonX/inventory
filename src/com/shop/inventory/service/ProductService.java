@@ -39,6 +39,14 @@ public class ProductService {
 		return inventoryDao.getInventoryList(productCode);
 	}
 	
+	public Inventory getInventoryById(Long inventoryId){
+		return inventoryDao.getInventoryById(inventoryId);
+	}
+	
+	public Inventory saveAndUpdateInventory(Inventory inventory){
+		return inventoryDao.merge(inventory);
+	}
+	
 	public List<ProductAttach> getProductAttachByProductCode(String productCode){
 		return productAttachDao.getProductAttachByProductCode(productCode);
 	}

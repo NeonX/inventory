@@ -16,8 +16,10 @@
 	<bean id="productDao" class="com.shop.inventory.dao.ProductDao"/>
 	<bean id="inventoryDao" class="com.shop.inventory.dao.InventoryDao"/>
 	<bean id="productAttachDao" class="com.shop.inventory.dao.ProductAttachDao"/>
+	<bean id="orderDao" class="com.shop.inventory.dao.OrderDao"/>
 	 
 	<bean id="productService" class="com.shop.inventory.service.ProductService" autowire="byName"/>
+	<bean id="orderService" class="com.shop.inventory.service.OrderService" autowire="byName"/>
     
 	<bean id="configUpload" class="com.pte.util.PropertyFileConfig">
 		<property name="configPath" value="upload.properties" />

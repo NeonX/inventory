@@ -29,4 +29,23 @@ public class InventoryDao extends AbstractGenericDao<Inventory, Long> {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public Inventory getInventoryById(Long inventoryId){
+		try{
+			if(inventoryId != null && inventoryId > 0){
+				String hql = "FROM Inventory WHERE id = :ivnid ";
+				Query q = getEntityManager().createQuery(hql);
+				q.setParameter("ivnid", inventoryId);
+				
+				List<Inventory> result = q.getResultList();
+				if(result != null && result.size() > 0){
+					return result.get(0);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }
